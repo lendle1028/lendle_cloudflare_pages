@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMSOFA 軟體工坊實驗室：機器學習實戰指南</title>
+    
+    <!-- Google Fonts: Noto Sans TC for UI, Noto Serif TC for reading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            scroll-behavior: smooth;
+        }
+        h1, h2, h3, .serif-font {
+            font-family: 'Noto Serif TC', serif;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%); /* Blue to Indigo for Tech vibe */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .code-tab-active {
+            background-color: #1e293b; /* slate-800 */
+            color: white;
+            border-bottom: 2px solid #6366f1; /* Indigo-500 */
+        }
+        .code-tab-inactive {
+            background-color: #e2e8f0; /* slate-200 */
+            color: #475569;
+            cursor: pointer;
+        }
+        .code-tab-inactive:hover {
+            background-color: #cbd5e1;
+        }
+        /* Hide scrollbar for code blocks */
+        pre::-webkit-scrollbar {
+            height: 8px;
+        }
+        pre::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+        
+        /* Animation Classes */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            will-change: opacity, visibility;
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: none;
+        }
+        
+        .theory-box {
+            background-color: #f1f5f9;
+            border-left: 4px solid #64748b;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-white/90 backdrop-blur-md shadow-sm z-50 border-b border-slate-200">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center gap-2">
+                    <i class="fa-solid fa-code text-indigo-600 text-2xl"></i>
+                    <span class="font-bold text-lg text-slate-800 tracking-wide">IMSOFA <span class="text-slate-400 font-normal">| 軟體工坊實驗室</span></span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#intro" class="text-slate-600 hover:text-indigo-600 transition font-medium">前言</a>
+                    <a href="#cart" class="text-slate-600 hover:text-indigo-600 transition font-medium">決策樹</a>
+                    <a href="#rf" class="text-slate-600 hover:text-indigo-600 transition font-medium">隨機森林</a>
+                    <a href="#kmeans" class="text-slate-600 hover:text-indigo-600 transition font-medium">K-Means</a>
+                </div>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                     <button id="mobile-menu-btn" class="text-slate-600 hover:text-indigo-600 focus:outline-none">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-200">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#intro" class="block px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-indigo-600">前言</a>
+                <a href="#cart" class="block px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-indigo-600">決策樹 (CART)</a>
+                <a href="#rf" class="block px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-indigo-600">隨機森林</a>
+                <a href="#kmeans" class="block px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-indigo-600">K-Means</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="intro" class="pt-32 pb-20 bg-gradient-to-br from-slate-50 to-slate-100">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <div class="inline-block px-4 py-1.5 mb-6 rounded-full bg-indigo-100 text-indigo-800 text-sm font-semibold tracking-wide">
+                Machine Learning & Software Engineering
+            </div>
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 text-slate-900 leading-tight">
+                當軟體工程遇上<br><span class="gradient-text">數據科學</span>
+            </h1>
+            <p class="text-xl text-slate-600 mb-10 serif-font leading-relaxed max-w-2xl mx-auto">
+                在巨量資料的時代，傳統的「規則式編程」已不足以應對。讓我們借助「機器學習」的視角，從數據中自動提煉出潛藏的邏輯與模式。
+            </p>
+            
+            <!-- Cards Grid for Intro -->
+            <div class="grid md:grid-cols-3 gap-6 text-left mt-12">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 mb-4">
+                        <i class="fa-solid fa-network-wired text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">決策樹</h3>
+                    <p class="text-slate-500 text-sm">邏輯清晰的分類路徑，像「20個問題」遊戲一樣找出規則。</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition">
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center text-green-600 mb-4">
+                        <i class="fa-solid fa-tree text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">隨機森林</h3>
+                    <p class="text-slate-500 text-sm">專家委員會的集體智慧，透過投票提高判斷準確率。</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition">
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600 mb-4">
+                        <i class="fa-solid fa-layer-group text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">K-Means 分群</h3>
+                    <p class="text-slate-500 text-sm">自動歸類雜亂資料，在未知主題的情況下探索結構。</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-6 pb-20 space-y-32">
+
+        <!-- 1. Decision Tree (CART) -->
+        <section id="cart" class="fade-in-section scroll-mt-24">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">1</div>
+                <h2 class="text-3xl font-bold text-slate-800">決策樹 (CART)</h2>
+            </div>
+            
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-8">
+                    <h3 class="text-xl font-bold text-blue-700 mb-4 flex items-center">
+                        <i class="fa-solid fa-sitemap mr-2"></i> 核心概念
+                    </h3>
+                    <p class="text-slate-600 mb-6 serif-font text-lg leading-relaxed">
+                        想像您正在玩「20個問題」遊戲，心中想著一個物件，電腦要猜是誰。這就是 CART 的運作原理：尋找資料中最具區辨力的特徵，將資料一分為二，不斷重複。
+                    </p>
+
+                    <!-- Theoretical Deep Dive -->
+                    <div class="theory-box">
+                        <h4 class="font-bold text-slate-700 mb-2 flex items-center text-sm uppercase tracking-wide">
+                            <i class="fa-solid fa-flask mr-2 text-slate-500"></i> 原理解析：如何選出「最佳問題」？
+                        </h4>
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            電腦不是憑感覺提問，而是透過數學指標來計算切割點：
+                            <br><br>
+                            <strong>Gini 不純度 (Gini Impurity)</strong> 或 <strong>熵 (Entropy)</strong>：<br>
+                            這些指標用來衡量資料的「混亂程度」。如果一個節點裡混雜了各種不同類別（如既有A類又有B類），不純度就很高。決策樹的目標是找到一個特徵切分點，使得切分後的子節點不純度<strong>下降最多</strong>（Information Gain 最大化）。
+                        </p>
+                    </div>
+
+                    <!-- Humanities Application Box -->
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-5 mb-8 rounded-r-lg">
+                        <h4 class="font-bold text-blue-800 mb-2">🏛️ 應用案例：紅樓夢作者歸屬</h4>
+                        <p class="text-blue-700 text-sm leading-relaxed">
+                            分析《紅樓夢》前八十回與後四十回。決策樹可以畫出一張圖：<br>
+                            「如果『兮』字頻率低於 X，且『於』字高於 Y，則判定為曹雪芹所著」。<br>
+                            <strong>最大優點：可解釋性高 (White Box Model)，我們可以清楚看到判斷路徑。</strong>
+                        </p>
+                    </div>
+
+                    <!-- Code Section -->
+                    <div class="bg-slate-900 rounded-xl overflow-hidden shadow-lg">
+                        <div class="flex border-b border-slate-700">
+                            <div class="px-6 py-3 text-sm font-medium code-tab-active" onclick="switchTab('cart', 'r', this)">R 語言</div>
+                            <div class="px-6 py-3 text-sm font-medium code-tab-inactive" onclick="switchTab('cart', 'python', this)">Python</div>
+                        </div>
+                        
+                        <!-- R Code -->
+                        <div id="cart-r" class="p-4 overflow-x-auto">
+<pre><code class="language-r"># 載入套件
+library(rpart)
+library(rpart.plot)
+
+# 步驟 1: 建立模型 (種樹)
+# 邏輯：尋找能讓 Gini 不純度下降最多的切分點
+tree_model <- rpart(Species ~., data = iris, method = "class")
+
+# 步驟 2: 畫出決策樹
+rpart.plot(tree_model, 
+           main = "決策樹：如何分辨鳶尾花",
+           extra = 104, 
+           box.palette = "GnBu")</code></pre>
+                        </div>
+
+                        <!-- Python Code -->
+                        <div id="cart-python" class="p-4 overflow-x-auto hidden">
+<pre><code class="language-python">from sklearn.datasets import load_iris
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+import matplotlib.pyplot as plt
+
+# 步驟 1: 準備數據
+iris = load_iris()
+X, y = iris.data, iris.target
+
+# 步驟 2: 建立模型 (使用 Gini 為預設標準)
+clf = DecisionTreeClassifier(criterion='gini', max_depth=3, random_state=42)
+clf.fit(X, y)
+
+# 步驟 3: 視覺化
+plt.figure(figsize=(10, 6))
+plot_tree(clf, feature_names=iris.feature_names, filled=True)
+plt.show()</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Random Forest -->
+        <section id="rf" class="fade-in-section scroll-mt-24">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center text-white font-bold">2</div>
+                <h2 class="text-3xl font-bold text-slate-800">隨機森林 (Random Forest)</h2>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-8">
+                    <h3 class="text-xl font-bold text-green-700 mb-4 flex items-center">
+                        <i class="fa-solid fa-users-viewfinder mr-2"></i> 核心概念
+                    </h3>
+                    <p class="text-slate-600 mb-6 serif-font text-lg leading-relaxed">
+                        決策樹容易鑽牛角尖（過度擬合）。隨機森林的解法是：「不要只依賴一位專家，而是培養一座森林。」透過群體決策來消除個體的偏見。
+                    </p>
+
+                    <!-- Theoretical Deep Dive -->
+                    <div class="theory-box">
+                        <h4 class="font-bold text-slate-700 mb-2 flex items-center text-sm uppercase tracking-wide">
+                            <i class="fa-solid fa-flask mr-2 text-slate-500"></i> 原理解析：Bagging 與特徵隨機性
+                        </h4>
+                        <div class="text-slate-600 text-sm leading-relaxed space-y-2">
+                            <p>隨機森林之所以強大，依賴於兩層隨機性來降低變異數 (Variance)：</p>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><strong>Bootstrap Aggregating (Bagging)</strong>：每棵樹訓練時，並非使用全部資料，而是從原始資料中「有放回地隨機抽取」樣本。這確保了每位專家看到的案例略有不同。</li>
+                                <li><strong>特徵隨機性 (Feature Randomness)</strong>：在每個節點分裂時，樹只能從「隨機選取的一部分特徵」中挑選最佳特徵。這強迫樹去學習不同的面向，避免所有樹都長得太像（降低相關性）。</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-green-50 p-5 rounded-lg border border-green-100">
+                            <h4 class="font-bold text-green-800 mb-2">🌳 隨機性 (Randomness)</h4>
+                            <p class="text-green-700 text-sm">每棵樹只讀一部分資料、用一部分特徵，確保多樣性。</p>
+                        </div>
+                        <div class="bg-green-50 p-5 rounded-lg border border-green-100">
+                            <h4 class="font-bold text-green-800 mb-2">🗳️ 集成投票 (Ensemble)</h4>
+                            <p class="text-green-700 text-sm">透過多數決 (Classification) 或平均值 (Regression) 產出最終結果。</p>
+                        </div>
+                    </div>
+
+                    <!-- Code Section -->
+                    <div class="bg-slate-900 rounded-xl overflow-hidden shadow-lg">
+                        <div class="flex border-b border-slate-700">
+                            <div class="px-6 py-3 text-sm font-medium code-tab-active" onclick="switchTab('rf', 'r', this)">R 語言</div>
+                            <div class="px-6 py-3 text-sm font-medium code-tab-inactive" onclick="switchTab('rf', 'python', this)">Python</div>
+                        </div>
+                        
+                        <!-- R Code -->
+                        <div id="rf-r" class="p-4 overflow-x-auto">
+<pre><code class="language-r">library(randomForest)
+set.seed(42)
+
+# 步驟 1: 建立隨機森林
+# Bagging 機制自動在內部運作
+rf_model <- randomForest(Species ~., data = iris, ntree = 500, importance = TRUE)
+
+# 步驟 2: 查看重要性
+# 哪種特徵最關鍵？
+varImpPlot(rf_model, main = "特徵重要性")</code></pre>
+                        </div>
+
+                        <!-- Python Code -->
+                        <div id="rf-python" class="p-4 overflow-x-auto hidden">
+<pre><code class="language-python">from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+
+# 步驟 1: 分割數據 (80% 訓練, 20% 測試)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+# 步驟 2: 建立模型
+# n_estimators=100: 建立 100 棵樹
+# bootstrap=True: 啟用 Bagging
+rf = RandomForestClassifier(n_estimators=100, bootstrap=True, random_state=42)
+rf.fit(X_train, y_train)
+
+# 步驟 3: 預測
+print(f"準確率: {rf.score(X_test, y_test):.2%}")</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. K-Means -->
+        <section id="kmeans" class="fade-in-section scroll-mt-24">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold">3</div>
+                <h2 class="text-3xl font-bold text-slate-800">K-Means 分群</h2>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-8">
+                    <h3 class="text-xl font-bold text-purple-700 mb-4 flex items-center">
+                        <i class="fa-solid fa-shapes mr-2"></i> 核心概念
+                    </h3>
+                    <p class="text-slate-600 mb-6 serif-font text-lg leading-relaxed">
+                        前兩種是「監督式學習」（有標準答案），K-Means 則是「非監督式學習」（沒有答案）。
+                        想像挖掘出數千片未知陶片，我們不知道有哪些朝代，只想知道「哪些東西長得像」。
+                    </p>
+
+                    <!-- Theoretical Deep Dive -->
+                    <div class="theory-box">
+                        <h4 class="font-bold text-slate-700 mb-2 flex items-center text-sm uppercase tracking-wide">
+                            <i class="fa-solid fa-flask mr-2 text-slate-500"></i> 原理解析：最小化距離平方和
+                        </h4>
+                        <div class="text-slate-600 text-sm leading-relaxed space-y-2">
+                            <p>K-Means 的數學目標是最小化 **組內誤差平方和 (Within-Cluster Sum of Squares, WCSS)**。演算法透過迭代兩個步驟來達成：</p>
+                            <ol class="list-decimal pl-5 space-y-1">
+                                <li><strong>分配 (Assignment)</strong>：計算每個資料點到 K 個中心點的歐幾里得距離 (Euclidean Distance)，將點歸類到最近的中心。</li>
+                                <li><strong>更新 (Update)</strong>：重新計算每個群體的「質心」（所有點的座標平均值），將中心點移動到新的質心位置。</li>
+                            </ol>
+                            <p class="mt-2">這兩個步驟會不斷重複，直到中心點不再移動（收斂）為止。</p>
+                        </div>
+                    </div>
+
+                    <!-- Humanities Application Box -->
+                    <div class="bg-purple-50 border-l-4 border-purple-500 p-5 mb-8 rounded-r-lg">
+                        <h4 class="font-bold text-purple-800 mb-2">📜 應用案例：文本自動歸類</h4>
+                        <p class="text-purple-700 text-sm leading-relaxed">
+                            將一位作家的所有書信丟進去，K-Means 可能會自動將其分為「家書」、「公文」和「情書」三類，完全不需要人工先閱讀。適合探索性研究。
+                        </p>
+                    </div>
+
+                    <!-- Visual Concept -->
+                    <div class="flex flex-col md:flex-row gap-4 mb-8 text-sm text-slate-500">
+                        <div class="flex-1 bg-slate-50 p-4 rounded text-center border border-slate-200">
+                            <i class="fa-solid fa-random text-purple-400 text-2xl mb-2"></i><br>
+                            1. 初始化中心點
+                        </div>
+                        <div class="hidden md:flex items-center text-slate-300"><i class="fa-solid fa-arrow-right"></i></div>
+                        <div class="flex-1 bg-slate-50 p-4 rounded text-center border border-slate-200">
+                            <i class="fa-solid fa-magnet text-purple-500 text-2xl mb-2"></i><br>
+                            2. 分配資料點 (Assignment)
+                        </div>
+                        <div class="hidden md:flex items-center text-slate-300"><i class="fa-solid fa-arrow-right"></i></div>
+                        <div class="flex-1 bg-slate-50 p-4 rounded text-center border border-slate-200">
+                            <i class="fa-solid fa-arrows-rotate text-purple-600 text-2xl mb-2"></i><br>
+                            3. 更新質心 (Update)
+                        </div>
+                    </div>
+
+                    <!-- Code Section -->
+                    <div class="bg-slate-900 rounded-xl overflow-hidden shadow-lg">
+                        <div class="flex border-b border-slate-700">
+                            <div class="px-6 py-3 text-sm font-medium code-tab-active" onclick="switchTab('kmeans', 'r', this)">R 語言</div>
+                            <div class="px-6 py-3 text-sm font-medium code-tab-inactive" onclick="switchTab('kmeans', 'python', this)">Python</div>
+                        </div>
+                        
+                        <!-- R Code -->
+                        <div id="kmeans-r" class="p-4 overflow-x-auto">
+<pre><code class="language-r">library(factoextra)
+
+# 數據標準化 (Scale)
+# 距離計算對數值敏感，必須先標準化
+df <- scale(iris[, -5])
+
+# 1. 手肘法判斷 K 值 (Elbow Method)
+# 觀察 WCSS 隨 K 值增加的下降幅度
+fviz_nbclust(df, kmeans, method = "wss")
+
+# 2. 執行 K-Means (K=3)
+set.seed(123)
+km_res <- kmeans(df, centers = 3, nstart = 25)
+
+# 3. 視覺化
+fviz_cluster(km_res, data = df, palette = "jco")</code></pre>
+                        </div>
+
+                        <!-- Python Code -->
+                        <div id="kmeans-python" class="p-4 overflow-x-auto hidden">
+<pre><code class="language-python">from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+
+# 數據標準化
+# 為了讓 Euclidean Distance 計算公平
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# 1. 執行 K-Means (K=3)
+# init='k-means++' 可加速收斂
+kmeans = KMeans(n_clusters=3, init='k-means++', random_state=42)
+kmeans.fit(X_scaled)
+
+# 2. 取得結果
+labels = kmeans.labels_
+centers = kmeans.cluster_centers_
+
+# (視覺化程式碼略)</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary & References -->
+        <section id="ref" class="fade-in-section">
+            <div class="bg-slate-800 text-slate-300 rounded-2xl p-8 md:p-12">
+                <h2 class="text-2xl font-bold text-white mb-6 serif-font">總結與建議</h2>
+                <div class="space-y-4 mb-10">
+                    <p class="flex items-start"><i class="fa-solid fa-check text-indigo-400 mt-1 mr-3"></i> <span>需要<strong>解釋規則</strong>（如風格學特徵）：選 <strong>決策樹</strong>。</span></p>
+                    <p class="flex items-start"><i class="fa-solid fa-check text-indigo-400 mt-1 mr-3"></i> <span>只在乎<strong>準確率</strong>與泛化能力：選 <strong>隨機森林</strong>。</span></p>
+                    <p class="flex items-start"><i class="fa-solid fa-check text-indigo-400 mt-1 mr-3"></i> <span>資料<strong>無標籤/未知結構</strong>：選 <strong>K-Means</strong>。</span></p>
+                </div>
+
+                <hr class="border-slate-600 mb-8">
+
+                <h3 class="text-lg font-bold text-white mb-4">參考文獻</h3>
+                <ul class="text-sm space-y-2 text-slate-400">
+                    <li><a href="#" class="hover:text-indigo-400 transition">Analytics Vidhya: In-depth Intuition of K-Means Clustering</a></li>
+                    <li><a href="#" class="hover:text-indigo-400 transition">Medium: Step-by-Step Guide to Implementing CART</a></li>
+                    <li><a href="#" class="hover:text-indigo-400 transition">Towards Data Science: Understanding Random Forest</a></li>
+                    <li><a href="#" class="hover:text-indigo-400 transition">Programming Historian: Introduction to Stylometry with Python</a></li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 py-8 text-center text-slate-500 text-sm">
+        <p>&copy; 2024 IMSOFA Software Workshop Lab. Content adapted for educational purposes.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-r.min.js"></script>
+    
+    <script>
+        // Tab Switching Logic
+        function switchTab(sectionId, lang, tabElement) {
+            // Find the container for this specific section
+            const section = document.getElementById(sectionId);
+            
+            // Hide all code blocks in this section
+            const rCode = document.getElementById(sectionId + '-r');
+            const pyCode = document.getElementById(sectionId + '-python');
+            
+            if (lang === 'r') {
+                rCode.classList.remove('hidden');
+                pyCode.classList.add('hidden');
+            } else {
+                rCode.classList.add('hidden');
+                pyCode.classList.remove('hidden');
+            }
+
+            // Update Tab Styles
+            const tabs = tabElement.parentElement.children;
+            for (let tab of tabs) {
+                tab.classList.remove('code-tab-active');
+                tab.classList.add('code-tab-inactive');
+            }
+            tabElement.classList.remove('code-tab-inactive');
+            tabElement.classList.add('code-tab-active');
+        }
+
+        // Scroll Animation Observer
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target); // Only animate once
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in-section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Mobile Menu Toggle
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>
