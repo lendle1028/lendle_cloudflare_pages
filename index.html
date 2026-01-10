@@ -4,20 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>曾俊雄 博士 | 個人學術網站</title>
-    <!-- 使用 Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* 補足一些 Tailwind 沒定義的動畫與細節 */
         .active-nav {
-            color: #2563eb !important; /* text-blue-600 */
-            background-color: #eff6ff !important; /* bg-blue-50 */
+            color: #2563eb !important;
+            background-color: #eff6ff !important;
         }
         .dropdown:hover .dropdown-menu {
             display: block;
         }
-        /* 讓選單稍微延遲消失增加手感 */
         .dropdown-menu {
             display: none;
             transition: all 0.2s;
@@ -30,7 +26,6 @@
     <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-slate-200">
         <div class="max-w-6xl mx-auto px-4 sm:px-6">
             <div class="flex justify-between items-center h-16">
-                <!-- Logo / Title -->
                 <div class="flex items-center cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
                     <span class="text-xl font-bold text-blue-700">曾俊雄 博士</span>
                     <span class="ml-2 text-sm text-slate-500 hidden sm:inline">Dr. Chun-Hsiung Tseng</span>
@@ -51,31 +46,17 @@
                         <i data-lucide="briefcase" class="w-4 h-4"></i> 計畫與實務
                     </button>
 
-                    <!-- 快速選單 (Dropdown) -->
+                    <!-- 動態快速選單 -->
                     <div class="relative dropdown ml-4">
                         <button class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-blue-600 flex items-center gap-1 border border-slate-200">
                             快速選單 <i data-lucide="chevron-down" class="w-4 h-4"></i>
                         </button>
-                        <div class="dropdown-menu absolute right-0 mt-0 w-48 bg-white border border-slate-200 shadow-xl rounded-md py-2">
-                            <!-- 研究相關 -->
-                            <div class="px-4 py-2 border-b border-slate-50">
-                                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">研究相關</div>
-                                <a href="https://scholar.google.com/citations?user=pGRNbWQAAAAJ&hl=zh-TW" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between px-2 py-1.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded">
-                                    Google Scholar <i data-lucide="external-link" class="w-3 h-3 opacity-50"></i>
-                                </a>
-                            </div>
-                            <!-- Apps -->
-                            <div class="px-4 py-2">
-                                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Apps</div>
-                                <a href="https://lendle.imsofa.rocks/apps/ipip/" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between px-2 py-1.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded">
-                                    IPIP <i data-lucide="external-link" class="w-3 h-3 opacity-50"></i>
-                                </a>
-                            </div>
+                        <div id="desktop-quick-menu" class="dropdown-menu absolute right-0 mt-0 w-56 bg-white border border-slate-200 shadow-xl rounded-md py-2">
+                            <!-- JS 會動態填入內容 -->
                         </div>
                     </div>
                 </div>
 
-                <!-- 手機端按鈕 -->
                 <div class="md:hidden">
                     <button onclick="toggleMobileMenu()" class="p-2 text-slate-600">
                         <i data-lucide="menu" id="menu-icon"></i>
@@ -84,27 +65,24 @@
             </div>
         </div>
 
-        <!-- 手機端選單內容 -->
+        <!-- 手機端選單 -->
         <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-100 px-4 py-4 space-y-2 shadow-inner">
             <button onclick="scrollToSection('about')" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-50">關於我</button>
             <button onclick="scrollToSection('research')" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-50">研究領域</button>
             <button onclick="scrollToSection('publications')" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-50">學術著作</button>
             <button onclick="scrollToSection('projects')" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-50">計畫與實務</button>
-            <div class="pt-2 border-t border-slate-100">
+            <div id="mobile-quick-menu-container" class="pt-2 border-t border-slate-100">
                 <div class="px-3 py-2 text-xs font-bold text-slate-400 uppercase">快速連結</div>
-                <a href="https://scholar.google.com/citations?user=pGRNbWQAAAAJ&hl=zh-TW" target="_blank" class="flex items-center gap-2 px-3 py-2 text-sm text-blue-600 font-medium"><i data-lucide="external-link" class="w-4 h-4"></i> Google Scholar</a>
-                <a href="https://lendle.imsofa.rocks/apps/ipip/" target="_blank" class="flex items-center gap-2 px-3 py-2 text-sm text-blue-600 font-medium"><i data-lucide="external-link" class="w-4 h-4"></i> IPIP App</a>
+                <!-- JS 會動態填入內容 -->
             </div>
         </div>
     </nav>
 
-    <!-- 主要內容 -->
     <main class="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-24">
         
         <!-- Section: About -->
         <section id="about" class="scroll-mt-24">
             <div class="space-y-12">
-                <!-- Header Hero -->
                 <section class="flex flex-col md:flex-row gap-8 items-center bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
                     <div class="w-48 h-48 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 border-4 border-white shadow-md flex-shrink-0">
                         <i data-lucide="user" class="w-20 h-20"></i>
@@ -126,7 +104,6 @@
                     </div>
                 </section>
 
-                <!-- Education & Service -->
                 <div class="grid md:grid-cols-2 gap-8">
                     <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
                         <h2 class="text-xl font-bold mb-4 flex items-center gap-2 text-slate-800">
@@ -136,23 +113,29 @@
                             <div class="relative pl-6 border-l-2 border-blue-100">
                                 <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-blue-500 border-2 border-white"></div>
                                 <p class="font-bold text-slate-800">國立台灣大學 資訊工程學系 博士</p>
-                                <p class="text-slate-500">2006 - 2010</p>
+                                <p class="text-slate-500">2006/09 - 2010/06</p>
                             </div>
                             <div class="relative pl-6 border-l-2 border-blue-100">
                                 <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-blue-300 border-2 border-white"></div>
                                 <p class="font-bold text-slate-800">國立台灣大學 資訊工程學系 碩士</p>
-                                <p class="text-slate-500">2001 - 2003</p>
+                                <p class="text-slate-500">2001/09 - 2003/06</p>
+                            </div>
+                            <div class="relative pl-6 border-l-2 border-blue-100">
+                                <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-blue-100 border-2 border-white"></div>
+                                <p class="font-bold text-slate-800">國立政治大學 資訊科學系 學士</p>
+                                <p class="text-slate-500">1997/09 - 2001/06</p>
                             </div>
                         </div>
                     </div>
                     <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
                         <h2 class="text-xl font-bold mb-4 flex items-center gap-2 text-slate-800">
-                            <i data-lucide="award" class="text-blue-600"></i> 榮譽與服務
+                            <i data-lucide="award" class="text-blue-600"></i> 經歷與榮譽
                         </h2>
                         <ul class="space-y-3 text-slate-600 text-sm">
-                            <li class="flex gap-2 text-slate-700"><span class="text-blue-500">🏆</span> <span class="font-medium">IEEE ECEI 2022 Best Paper Award</span></li>
-                            <li class="flex gap-2"><span>👥</span> <span>社團法人中華兒童程式推廣學會 理事長</span></li>
-                            <li class="flex gap-2"><span>🌟</span> <span>元智大學教學特優獎</span></li>
+                            <li><span class="font-bold text-slate-800">現職：</span>元智大學電機工程學系乙組副教授</li>
+                            <li><span class="font-bold text-slate-800">經歷：</span>南華大學資管系副教授、南華大學資管系主任</li>
+                            <li class="flex gap-2 text-slate-700"><span class="text-blue-500">🏆</span> <span>IEEE ECEI 2022 Best Paper Award</span></li>
+                            <li class="flex gap-2 text-slate-700"><span class="text-blue-500">🏆</span> <span>元智大學教學特優獎 (112學年度)</span></li>
                         </ul>
                     </div>
                 </div>
@@ -161,30 +144,17 @@
 
         <!-- Section: Research -->
         <section id="research" class="scroll-mt-24">
-            <div class="space-y-8">
-                <div class="text-center mb-10">
-                    <h2 class="text-3xl font-bold text-slate-900">研究理念與領域</h2>
-                    <p class="text-slate-500">Research Interests & Philosophy</p>
-                    <div class="w-16 h-1 bg-blue-600 mx-auto mt-4 rounded-full"></div>
-                </div>
-                <div class="bg-blue-700 text-white p-8 rounded-2xl shadow-lg border border-blue-800 italic text-lg">
-                    「致力於開發能真正理解人類語言與行為模式的智慧系統，並解決教育現場的複雜問題。」
-                </div>
-                <div class="grid md:grid-cols-3 gap-6">
+            <div class="space-y-8 text-center max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-slate-900">研究領域 Research Interests</h2>
+                <div class="w-16 h-1 bg-blue-600 mx-auto rounded-full"></div>
+                <div class="grid md:grid-cols-2 gap-8 text-left mt-8">
                     <div class="bg-white p-6 rounded-xl border border-blue-100 shadow-sm">
-                        <i data-lucide="code" class="text-blue-600 mb-4"></i>
-                        <h4 class="font-bold mb-2">AI 賦能教育</h4>
-                        <p class="text-slate-600 text-sm">利用 LLM 與 NLP 技術開發除錯工具、RAG 課堂問答系統。</p>
+                        <h3 class="font-bold text-blue-700 text-lg mb-3">AI 賦能教育 (AIED)</h3>
+                        <p class="text-sm text-slate-600">利用 LLM 與 NLP 技術開發除錯工具、RAG 課堂問答系統。推動「規格導向共創」與「情境感知代理人」解決方案。</p>
                     </div>
                     <div class="bg-white p-6 rounded-xl border border-purple-100 shadow-sm">
-                        <i data-lucide="user" class="text-purple-600 mb-4"></i>
-                        <h4 class="font-bold mb-2">計算心理學</h4>
-                        <p class="text-slate-600 text-sm">透過生理訊號進行行為與人格特質分析。</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-xl border border-emerald-100 shadow-sm">
-                        <i data-lucide="briefcase" class="text-emerald-600 mb-4"></i>
-                        <h4 class="font-bold mb-2">智慧系統開發</h4>
-                        <p class="text-slate-600 text-sm">開發規格導向的 AI 共學模式與邊緣運算 AI 助教。</p>
+                        <h3 class="font-bold text-purple-700 text-lg mb-3">計算心理學</h3>
+                        <p class="text-sm text-slate-600">透過行動裝置與物聯網設備獲取多模態數據，運用深度學習演算法進行特徵探勘與行為分析，瞭解學生人格特質與需求。</p>
                     </div>
                 </div>
             </div>
@@ -193,21 +163,23 @@
         <!-- Section: Publications -->
         <section id="publications" class="scroll-mt-24">
             <div class="space-y-8">
-                <h2 class="text-2xl font-bold text-slate-900 border-l-4 border-blue-600 pl-4">精選期刊論文</h2>
-                <div class="space-y-4">
-                    <div class="bg-white p-5 rounded-lg border border-slate-100 shadow-sm">
-                        <div class="flex justify-between">
-                            <h3 class="font-medium text-slate-800 leading-snug">Investigating the effects of Puppy CodeReview, an AI-based code review system, on students' cognitive load</h3>
-                            <span class="bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded font-bold h-fit">2025</span>
+                <h2 class="text-2xl font-bold text-slate-900 border-l-4 border-blue-600 pl-4">學術著作 Publications</h2>
+                
+                <div class="space-y-6">
+                    <!-- 期刊論文 -->
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2"><i data-lucide="file-text" class="w-5 h-5 text-blue-500"></i> 期刊論文 (Selected Journals)</h3>
+                        <div id="journal-list" class="space-y-3">
+                            <!-- 由 JS 填入 -->
                         </div>
-                        <p class="mt-2 text-sm text-slate-500 italic">SoftwareX, SCIE, Q2</p>
                     </div>
-                    <div class="bg-white p-5 rounded-lg border border-slate-100 shadow-sm">
-                        <div class="flex justify-between">
-                            <h3 class="font-medium text-slate-800 leading-snug">MindMe: an AI-Powered personality assessment tool</h3>
-                            <span class="bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded font-bold h-fit">2024</span>
+
+                    <!-- 會議論文 -->
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2"><i data-lucide="users" class="w-5 h-5 text-purple-500"></i> 會議論文 (Selected Conferences)</h3>
+                        <div id="conference-list" class="space-y-3">
+                            <!-- 由 JS 填入 -->
                         </div>
-                        <p class="mt-2 text-sm text-slate-500 italic">Multimedia Tools and Applications, SCIE</p>
                     </div>
                 </div>
             </div>
@@ -216,27 +188,19 @@
         <!-- Section: Projects -->
         <section id="projects" class="scroll-mt-24 pb-12">
             <div class="space-y-8">
-                <h2 class="text-2xl font-bold text-slate-900 border-l-4 border-blue-600 pl-4">研究計畫與產學合作</h2>
+                <h2 class="text-2xl font-bold text-slate-900 border-l-4 border-blue-600 pl-4">研究計畫 Projects</h2>
                 <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm overflow-x-auto">
-                    <table class="w-full text-left border-collapse min-w-[500px]">
+                    <table class="w-full text-left border-collapse min-w-[600px]">
                         <thead class="bg-slate-50">
                             <tr>
                                 <th class="px-6 py-4 text-sm font-bold text-slate-600">期間</th>
                                 <th class="px-6 py-4 text-sm font-bold text-slate-600">計畫名稱</th>
+                                <th class="px-6 py-4 text-sm font-bold text-slate-600">補助單位</th>
                                 <th class="px-6 py-4 text-sm font-bold text-slate-600">職務</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-100">
-                            <tr>
-                                <td class="px-6 py-4 text-sm">2025-2027</td>
-                                <td class="px-6 py-4 text-sm font-medium">遊戲化程式學習系統 (國科會)</td>
-                                <td class="px-6 py-4 text-sm text-emerald-700 font-bold">主持人</td>
-                            </tr>
-                            <tr>
-                                <td class="px-6 py-4 text-sm">2018-2020</td>
-                                <td class="px-6 py-4 text-sm font-medium">大學程式設計教學計畫 (教育部)</td>
-                                <td class="px-6 py-4 text-sm text-blue-700 font-bold">共同主持人</td>
-                            </tr>
+                        <tbody id="project-list" class="divide-y divide-slate-100">
+                            <!-- 由 JS 填入 -->
                         </tbody>
                     </table>
                 </div>
@@ -244,76 +208,158 @@
         </section>
     </main>
 
-    <!-- Footer -->
     <footer class="bg-white border-t border-slate-200 py-12">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center">
-            <div class="flex justify-center space-x-6 mb-6">
-                <a href="mailto:lendle.tseng.archive@gmail.com" class="text-slate-400 hover:text-blue-600"><i data-lucide="mail"></i></a>
-                <a href="https://github.com/lendle1028" target="_blank" class="text-slate-400 hover:text-slate-900"><i data-lucide="github"></i></a>
-            </div>
-            <p class="text-slate-500 text-sm">© 2026 曾俊雄 博士. All Rights Reserved.</p>
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center text-slate-500">
+            <p>© 2026 曾俊雄 博士. 元智大學電機工程學系.</p>
         </div>
     </footer>
 
     <script>
-        // 初始化 Lucide 圖標
+        // ---------------------------------------------------------
+        // 1. 快速選單管理器 (核心功能)
+        // ---------------------------------------------------------
+        const QuickMenuManager = {
+            data: {},
+            addItem(group, name, url) {
+                if (!this.data[group]) this.data[group] = [];
+                this.data[group].push({ name, url });
+                this.render();
+            },
+            render() {
+                const desktopContainer = document.getElementById('desktop-quick-menu');
+                const mobileContainer = document.getElementById('mobile-quick-menu-container');
+                
+                let desktopHtml = '';
+                let mobileHtml = '<div class="px-3 py-2 text-xs font-bold text-slate-400 uppercase">快速連結</div>';
+
+                for (const group in this.data) {
+                    // Desktop Group
+                    desktopHtml += `
+                        <div class="px-4 py-2 border-b border-slate-50 last:border-0">
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">${group}</div>
+                            ${this.data[group].map(item => `
+                                <a href="${item.url}" target="_blank" class="flex items-center justify-between px-2 py-1.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded">
+                                    ${item.name} <i data-lucide="external-link" class="w-3 h-3 opacity-50"></i>
+                                </a>
+                            `).join('')}
+                        </div>
+                    `;
+                    // Mobile Group
+                    this.data[group].forEach(item => {
+                        mobileHtml += `
+                            <a href="${item.url}" target="_blank" class="flex items-center gap-2 px-3 py-2 text-sm text-blue-600 font-medium">
+                                <i data-lucide="external-link" class="w-4 h-4"></i> [${group}] ${item.name}
+                            </a>
+                        `;
+                    });
+                }
+                desktopContainer.innerHTML = desktopHtml;
+                mobileContainer.innerHTML = mobileHtml;
+                lucide.createIcons();
+            }
+        };
+
+        // ---------------------------------------------------------
+        // 2. 資料填入
+        // ---------------------------------------------------------
+        
+        // 快速選單
+        QuickMenuManager.addItem('研究相關', 'Google Scholar', 'https://scholar.google.com/citations?user=pGRNbWQAAAAJ&hl=zh-TW');
+        QuickMenuManager.addItem('研究相關', 'GitHub Profile', 'https://github.com/lendle1028');
+        QuickMenuManager.addItem('應用工具', 'IPIP 性格評測', 'https://lendle.imsofa.rocks/apps/ipip/');
+        QuickMenuManager.addItem('應用工具', 'PuppyChatter', 'https://imsofa.rocks/projects/puppychatter/latest/');
+
+        // 填入期刊 (從自傳整理)
+        const journals = [
+            { title: "Investigating the effects of Puppy CodeReview, an AI-based code review system, on students' cognitive load", journal: "SoftwareX", year: 2025, tag: "SCIE, Q2" },
+            { title: "Enhancing programming education through AI cognitive scaffolding", journal: "Educational Technology & Society", year: 2025, tag: "SSCI, Q1" },
+            { title: "MindMe: an AI-Powered personality assessment tool based on multi-modal data", journal: "Multimedia Tools and Applications", year: 2024, tag: "SCIE" },
+            { title: "A semi-hierarchical clustering method for constructing knowledge trees from StackOverflow", journal: "Journal of Information Science", year: 2022, tag: "SSCI/SCIE" },
+            { title: "Detecting In Situ Identity Fraud on Social Network Services", journal: "IEEE Systems Journal", year: 2017, tag: "SCIE, Q1" }
+        ];
+
+        document.getElementById('journal-list').innerHTML = journals.map(j => `
+            <div class="bg-white p-4 rounded-lg border border-slate-100 shadow-sm hover:border-blue-200 transition-colors">
+                <div class="flex justify-between items-start gap-4">
+                    <h4 class="font-medium text-slate-800 text-sm md:text-base">${j.title}</h4>
+                    <span class="bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded font-bold whitespace-nowrap">${j.year}</span>
+                </div>
+                <p class="mt-2 text-xs text-slate-500 italic">${j.journal} | <span class="text-blue-600 font-semibold">${j.tag}</span></p>
+            </div>
+        `).join('');
+
+        // 填入計畫
+        const projects = [
+            { year: "2025-2027", name: "發展以 AI 技術為後台的類 Duolingo 遊戲化程式學習系統", source: "國科會", role: "主持人" },
+            { year: "2018-2020", name: "推動大學程式設計教學計畫-分項3: Web領域", source: "教育部", role: "共同主持人" },
+            { year: "2015-2016", name: "高級中等以下學校學生健康資訊系統健康資料分析整合", source: "國教署", role: "共同主持人" },
+            { year: "2014-2016", name: "Everybet APP 開發產學計畫", source: "嵐奕科技", role: "主持人" }
+        ];
+
+        document.getElementById('project-list').innerHTML = projects.map(p => `
+            <tr class="hover:bg-slate-50 transition-colors">
+                <td class="px-6 py-4 text-sm text-slate-500">${p.year}</td>
+                <td class="px-6 py-4 text-sm font-medium text-slate-800">${p.name}</td>
+                <td class="px-6 py-4 text-sm text-slate-600">${p.source}</td>
+                <td class="px-6 py-4 text-sm"><span class="px-2 py-1 ${p.role==='主持人'?'bg-emerald-50 text-emerald-700':'bg-blue-50 text-blue-700'} rounded-md text-xs font-bold">${p.role}</span></td>
+            </tr>
+        `).join('');
+
+        // 填入會議
+        const conferences = [
+            { title: "Evaluating the Role of AI Scaffolding in Remote Programming Education", conf: "IEEE ECEI", year: 2022, note: "Best Paper Award" },
+            { title: "Cognitive Scaffolding in Software Engineering Education", conf: "ICSE Workshop", year: 2021, note: "" }
+        ];
+        document.getElementById('conference-list').innerHTML = conferences.map(c => `
+             <div class="bg-slate-50 p-4 rounded-lg border-l-4 border-slate-300">
+                <p class="text-sm font-medium text-slate-800">${c.title}</p>
+                <p class="text-xs text-slate-500 mt-1">${c.conf}, ${c.year} ${c.note ? `| <span class="text-orange-600 font-bold">${c.note}</span>` : ''}</p>
+             </div>
+        `).join('');
+
+        // ---------------------------------------------------------
+        // 3. UI 互動邏輯
+        // ---------------------------------------------------------
         lucide.createIcons();
 
-        // 平滑捲動
         function scrollToSection(id) {
             const element = document.getElementById(id);
             if (element) {
                 const offset = 80;
-                const elementPosition = element.getBoundingClientRect().top;
-                const offsetPosition = elementPosition + window.pageYOffset - offset;
+                const bodyRect = document.body.getBoundingClientRect().top;
+                const elementRect = element.getBoundingClientRect().top;
+                const elementPosition = elementRect - bodyRect;
+                const offsetPosition = elementPosition - offset;
 
-                window.scrollTo({
-                    top: offsetPosition,
-                    behavior: 'smooth'
-                });
+                window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
             }
-            // 如果是在手機模式，點擊後收起選單
-            const mobileMenu = document.getElementById('mobile-menu');
-            if (!mobileMenu.classList.contains('hidden')) {
-                toggleMobileMenu();
-            }
+            const menu = document.getElementById('mobile-menu');
+            if (!menu.classList.contains('hidden')) toggleMobileMenu();
         }
 
-        // 手機選單切換
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
             const icon = document.getElementById('menu-icon');
             const isHidden = menu.classList.toggle('hidden');
-            
-            // 更新圖標 (需重新執行 createIcons 以反映變化)
             icon.setAttribute('data-lucide', isHidden ? 'menu' : 'x');
             lucide.createIcons();
         }
 
-        // 捲動偵測 (Scroll Spy)
         window.addEventListener('scroll', () => {
             const sections = ['about', 'research', 'publications', 'projects'];
             const navLinks = document.querySelectorAll('.nav-link');
             let current = '';
-
             const scrollPosition = window.scrollY + 120;
 
             sections.forEach(id => {
                 const element = document.getElementById(id);
-                if (element) {
-                    const offsetTop = element.offsetTop;
-                    const offsetHeight = element.offsetHeight;
-                    if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-                        current = id;
-                    }
+                if (element && scrollPosition >= element.offsetTop && scrollPosition < element.offsetTop + element.offsetHeight) {
+                    current = id;
                 }
             });
 
             navLinks.forEach(link => {
-                link.classList.remove('active-nav');
-                if (link.getAttribute('data-nav') === current) {
-                    link.classList.add('active-nav');
-                }
+                link.classList.toggle('active-nav', link.getAttribute('data-nav') === current);
             });
         });
     </script>
