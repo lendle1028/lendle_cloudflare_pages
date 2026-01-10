@@ -1,200 +1,400 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dr. Chun-Hsiung Tseng - Portfolio</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+import React, { useState, useEffect, useRef } from 'react';
+import { 
+  User, 
+  BookOpen, 
+  Code, 
+  Briefcase, 
+  GraduationCap, 
+  Mail, 
+  Github, 
+  ExternalLink,
+  ChevronDown,
+  Menu,
+  X,
+  Award,
+  Globe
+} from 'lucide-react';
+
+const App = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isQuickMenuOpen, setIsQuickMenuOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('about');
+
+  // 導航配置
+  const navItems = [
+    { id: 'about', label: '關於我', icon: <User size={18} /> },
+    { id: 'research', label: '研究領域', icon: <Globe size={18} /> },
+    { id: 'publications', label: '學術著作', icon: <BookOpen size={18} /> },
+    { id: 'projects', label: '計畫與實務', icon: <Briefcase size={18} /> },
+  ];
+
+  // 快速選單配置 (二層結構)
+  const quickMenuItems = [
+    {
+      label: '研究相關',
+      children: [
+        { label: 'Google Scholar', url: 'https://scholar.google.com/citations?user=pGRNbWQAAAAJ&hl=zh-TW' }
+      ]
+    },
+    {
+      label: 'Apps',
+      children: [
+        { label: 'IPIP', url: 'https://lendle.imsofa.rocks/apps/ipip/' }
+      ]
+    }
+  ];
+
+  // 處理平滑捲動
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      const offset = 80; // 考慮到 sticky navbar 的高度
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = element.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+    setIsMenuOpen(false);
+  };
+
+  // 監聽捲動位置來更新當前 active 的標籤
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 120;
+
+      navItems.forEach((item) => {
+        const element = document.getElementById(item.id);
+        if (element) {
+          const { offsetTop, offsetHeight } = element;
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            setActiveTab(item.id);
+          }
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans scroll-smooth">
+      {/* 導航欄 */}
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-slate-200">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center cursor-pointer" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
+              <span className="text-xl font-bold text-blue-700">曾俊雄 博士</span>
+              <span className="ml-2 text-sm text-slate-500 hidden sm:inline">Dr. Chun-Hsiung Tseng</span>
+            </div>
+
+            {/* 桌面端選單 */}
+            <div className="hidden md:flex items-center space-x-2">
+              {navItems.map(item => (
+                <button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-all flex items-center gap-1 ${
+                    activeTab === item.id ? 'text-blue-600 bg-blue-50' : 'text-slate-600 hover:text-blue-600 hover:bg-slate-50'
+                  }`}
+                >
+                  {item.icon} {item.label}
+                </button>
+              ))}
+
+              {/* 快速選單 (二層結構) */}
+              <div className="relative group ml-4">
+                <button 
+                  className="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-blue-600 flex items-center gap-1 border border-slate-200"
+                  onMouseEnter={() => setIsQuickMenuOpen(true)}
+                  onMouseLeave={() => setIsQuickMenuOpen(false)}
+                >
+                  快速選單 <ChevronDown size={14} />
+                </button>
+                {isQuickMenuOpen && (
+                  <div 
+                    className="absolute right-0 mt-0 w-48 bg-white border border-slate-200 shadow-xl rounded-md py-2 animate-in fade-in zoom-in duration-200"
+                    onMouseEnter={() => setIsQuickMenuOpen(true)}
+                    onMouseLeave={() => setIsQuickMenuOpen(false)}
+                  >
+                    {quickMenuItems.map((parent, idx) => (
+                      <div key={idx} className="px-4 py-2 border-b last:border-0 border-slate-50">
+                        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">{parent.label}</div>
+                        {parent.children.map((child, cIdx) => (
+                          <a
+                            key={cIdx}
+                            href={child.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-between px-2 py-1.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded"
+                          >
+                            {child.label} <ExternalLink size={12} className="opacity-50" />
+                          </a>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* 手機端選單按鈕 */}
+            <div className="md:hidden">
+              <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-2 text-slate-600">
+                {isMenuOpen ? <X /> : <Menu />}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* 手機端選單內容 */}
+        {isMenuOpen && (
+          <div className="md:hidden bg-white border-t border-slate-100 px-4 py-4 space-y-2 shadow-inner">
+            {navItems.map(item => (
+              <button
+                key={item.id}
+                onClick={() => scrollToSection(item.id)}
+                className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium ${
+                    activeTab === item.id ? 'text-blue-600 bg-blue-50' : 'text-slate-700 hover:bg-slate-50'
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+            <div className="pt-2 border-t border-slate-100">
+              <div className="px-3 py-2 text-xs font-bold text-slate-400 uppercase">快速選單</div>
+              {quickMenuItems.map((parent) => (
+                parent.children.map((child, idx) => (
+                  <a key={idx} href={child.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-2 text-sm text-blue-600 font-medium">
+                    <ExternalLink size={14} /> {parent.label} - {child.label}
+                  </a>
+                ))
+              ))}
+            </div>
+          </div>
+        )}
+      </nav>
+
+      {/* 主要內容區 */}
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-24">
         
-        body {
-            font-family: 'Inter', sans-serif;
-            scroll-behavior: smooth;
-        }
-
-        .gradient-text {
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .card-hover {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .card-hover:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-        }
-    </style>
-</head>
-<body class="bg-slate-50 text-slate-900">
-
-    <!-- Navigation -->
-    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
-        <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-            <span class="text-xl font-bold gradient-text">Dr. Tseng.</span>
-            <div class="space-x-8 hidden md:flex">
-                <a href="#about" class="hover:text-indigo-600 transition-colors">About</a>
-                <a href="#research" class="hover:text-indigo-600 transition-colors">Research</a>
-                <a href="#experience" class="hover:text-indigo-600 transition-colors">Experience</a>
-                <a href="#contact" class="hover:text-indigo-600 transition-colors">Contact</a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <header id="about" class="pt-32 pb-16 px-6">
-        <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-12">
-            <div class="w-48 h-48 md:w-64 md:h-64 rounded-2xl overflow-hidden shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-500 bg-indigo-100 flex items-center justify-center">
-                <!-- Profile Placeholder -->
-                <i class="fas fa-user-tie text-indigo-300 text-8xl"></i>
-            </div>
-            <div class="flex-1 text-center md:text-left">
-                <p class="text-indigo-600 font-semibold mb-2 uppercase tracking-widest text-sm">Associate Professor</p>
-                <h1 class="text-4xl md:text-6xl font-extrabold mb-4">
-                    Dr. <span class="gradient-text">Chun-Hsiung Tseng</span>
-                </h1>
-                <p class="text-xl text-slate-600 mb-8 leading-relaxed">
-                    PhD in Computer Science from National Taiwan University. Specializing in AI, Mobile IoT, and Educational Technology to solve complex human problems through computational psychology.
+        {/* Section: About */}
+        <section id="about" className="scroll-mt-24">
+          <div className="space-y-12">
+            {/* Header Hero */}
+            <section className="flex flex-col md:flex-row gap-8 items-center bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
+              <div className="w-48 h-48 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 border-4 border-white shadow-md flex-shrink-0">
+                <User size={80} />
+              </div>
+              <div className="flex-1 text-center md:text-left">
+                <h1 className="text-3xl font-bold text-slate-900 mb-2">曾俊雄 博士 <span className="text-xl font-normal text-slate-500 ml-2">Dr. Chun-Hsiung Tseng</span></h1>
+                <p className="text-lg text-blue-700 font-medium mb-4">元智大學 電機工程學系 乙組 副教授</p>
+                <p className="text-slate-600 mb-6 leading-relaxed">
+                  專長於 AI 賦能教育、計算心理學、大語言模型（LLM）與軟體工程。致力於開發能理解人類行為與語言模式的智慧系統，並將其應用於解決真實教育現場的問題。
                 </p>
-                <div class="flex flex-wrap justify-center md:justify-start gap-4">
-                    <a href="#contact" class="bg-indigo-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200">
-                        Collaborate with Me
-                    </a>
-                    <div class="flex items-center gap-4 text-2xl text-slate-400">
-                        <a href="https://github.com/lendle1028" target="_blank" class="hover:text-indigo-600 transition-colors"><i class="fab fa-github"></i></a>
-                        <a href="mailto:lendle.tseng.archive@gmail.com" class="hover:text-indigo-600 transition-colors"><i class="fas fa-envelope"></i></a>
-                    </div>
+                <div className="flex flex-wrap justify-center md:justify-start gap-4">
+                  <a href="mailto:lendle.tseng.archive@gmail.com" className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 transition-colors">
+                    <Mail size={18} /> 聯繫我
+                  </a>
+                  <a href="https://github.com/lendle1028" target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors">
+                    <Github size={18} /> GitHub
+                  </a>
                 </div>
+              </div>
+            </section>
+
+            {/* Education & Experience Grid */}
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                <h2 className="text-xl font-bold mb-4 flex items-center gap-2 text-slate-800">
+                  <GraduationCap className="text-blue-600" /> 學歷 Education
+                </h2>
+                <div className="space-y-4">
+                  <div className="relative pl-6 border-l-2 border-blue-100">
+                    <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-blue-500 border-2 border-white"></div>
+                    <p className="font-bold text-slate-800">國立台灣大學 資訊工程學系 博士</p>
+                    <p className="text-sm text-slate-500">2006 - 2010</p>
+                  </div>
+                  <div className="relative pl-6 border-l-2 border-blue-100">
+                    <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-blue-300 border-2 border-white"></div>
+                    <p className="font-bold text-slate-800">國立台灣大學 資訊工程學系 碩士</p>
+                    <p className="text-sm text-slate-500">2001 - 2003</p>
+                  </div>
+                  <div className="relative pl-6 border-l-2 border-blue-100">
+                    <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-blue-100 border-2 border-white"></div>
+                    <p className="font-bold text-slate-800">國立政治大學 資訊科學系 學士</p>
+                    <p className="text-sm text-slate-500">1997 - 2001</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                <h2 className="text-xl font-bold mb-4 flex items-center gap-2 text-slate-800">
+                  <Award className="text-blue-600" /> 榮譽與服務 Honors & Service
+                </h2>
+                <ul className="space-y-3 text-slate-600 text-sm">
+                  <li className="flex gap-2 text-slate-700"><span className="text-blue-500">🏆</span> <span className="font-medium underline decoration-blue-200">IEEE ECEI 2022 Best Paper Award</span></li>
+                  <li className="flex gap-2"><span>🌟</span> <span>元智大學教學特優獎、南華大學特殊優秀研究人才</span></li>
+                  <li className="flex gap-2"><span>👥</span> <span>社團法人中華兒童程式推廣學會 理事長</span></li>
+                  <li className="flex gap-2"><span>🔧</span> <span>元智大學系教評委員及 IEET 認證撰寫召集人</span></li>
+                </ul>
+              </div>
             </div>
-        </div>
-    </header>
+          </div>
+        </section>
 
-    <!-- Research Focus Section -->
-    <section id="research" class="py-20 bg-white">
-        <div class="max-w-5xl mx-auto px-6">
-            <h2 class="text-3xl font-bold mb-4 text-center">Research Pillars</h2>
-            <p class="text-slate-500 text-center mb-12 max-w-2xl mx-auto">Integrating cutting-edge CS technology with education and humanities to foster "Smart Education" innovations.</p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Research 1 -->
-                <div class="p-8 rounded-2xl border border-slate-100 bg-slate-50 card-hover">
-                    <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center mb-6">
-                        <i class="fas fa-brain text-xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">Generative AI & EdTech</h3>
-                    <p class="text-slate-600 text-sm">Developing LLM-based tools like PuppyCodeReview and RAG-driven Q&A systems to optimize learning outcomes.</p>
-                </div>
-                <!-- Research 2 -->
-                <div class="p-8 rounded-2xl border border-slate-100 bg-slate-50 card-hover">
-                    <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center mb-6">
-                        <i class="fas fa-satellite-dish text-xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">Edge Computing & IoT</h3>
-                    <p class="text-slate-600 text-sm">Building wearable sensing devices and mobile systems for multi-modal data acquisition and behavioral analysis.</p>
-                </div>
-                <!-- Research 3 -->
-                <div class="p-8 rounded-2xl border border-slate-100 bg-slate-50 card-hover">
-                    <div class="w-12 h-12 bg-pink-100 text-pink-600 rounded-lg flex items-center justify-center mb-6">
-                        <i class="fas fa-users-cog text-xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">Computational Psychology</h3>
-                    <p class="text-slate-600 text-sm">Analyzing physiological signals and NLP data to construct intelligent environments that understand learner behavior.</p>
-                </div>
+        {/* Section: Research */}
+        <section id="research" className="scroll-mt-24">
+          <div className="space-y-8">
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold text-slate-900">研究理念與領域</h2>
+              <p className="text-slate-500">Research Interests & Philosophy</p>
+              <div className="w-16 h-1 bg-blue-600 mx-auto mt-4 rounded-full"></div>
             </div>
-        </div>
-    </section>
 
-    <!-- Experience Section -->
-    <section id="experience" class="py-20 bg-slate-50">
-        <div class="max-w-5xl mx-auto px-6">
-            <h2 class="text-3xl font-bold mb-12">Academic & Professional Journey</h2>
-            <div class="space-y-8">
-                <div class="flex gap-6 items-start">
-                    <div class="w-24 pt-1 font-bold text-indigo-600">2017-Now</div>
-                    <div>
-                        <h4 class="text-xl font-bold">Associate Professor</h4>
-                        <p class="text-slate-500 mb-2">Yuan Ze University, Dept. of Electrical Engineering</p>
-                        <p class="text-slate-600 text-sm">Expertise in Network Programming, Game Design, and Mobile Development. Specialized in EMI (English Medium Instruction).</p>
-                    </div>
-                </div>
-                <div class="flex gap-6 items-start">
-                    <div class="w-24 pt-1 font-bold text-indigo-600">2021-Now</div>
-                    <div>
-                        <h4 class="text-xl font-bold">Chairman</h4>
-                        <p class="text-slate-500 mb-2">Chinese Children's Programming Promotion Association</p>
-                        <p class="text-slate-600 text-sm">Promoting computational thinking and bridging the gap between University and K-12 education through USR initiatives.</p>
-                    </div>
-                </div>
-                <div class="flex gap-6 items-start">
-                    <div class="w-24 pt-1 font-bold text-indigo-600">2013-2017</div>
-                    <div>
-                        <h4 class="text-xl font-bold">Assistant Professor</h4>
-                        <p class="text-slate-500 mb-2">Nanhua University, Dept. of Information Management</p>
-                        <p class="text-slate-600 text-sm">Managed national-scale health info systems for K-12 students, handling high-concurrency cloud architectures.</p>
-                    </div>
-                </div>
+            <div className="bg-blue-700 text-white p-8 rounded-2xl shadow-lg border border-blue-800">
+              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <Globe size={20} /> 核心研究主張
+              </h3>
+              <p className="leading-relaxed opacity-95 text-lg italic">
+                「隨著 AI 與深度學習技術的指數級成長，跨領域研究已轉向以數據與大語言模型（LLM）為核心的深度整合。
+                我的研究主軸聚焦於教育科技、軟體工程與自然語言處理技術的結合，致力於構建人機協作的認知鷹架。」
+              </p>
             </div>
-        </div>
-    </section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="py-20 bg-white">
-        <div class="max-w-3xl mx-auto px-6 text-center">
-            <h2 class="text-3xl font-bold mb-4">Let's Connect</h2>
-            <p class="text-slate-600 mb-10 text-lg">Interested in AI research, programming education, or cross-domain collaboration? Reach out below.</p>
-            
-            <div class="bg-white p-2 rounded-3xl shadow-2xl shadow-slate-200 border border-slate-100 overflow-hidden">
-                <div class="p-8 md:p-12">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left mb-10">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center">
-                                <i class="fas fa-envelope"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs text-slate-400 font-bold uppercase">Email</p>
-                                <p class="text-sm font-semibold">lendle.tseng.archive@gmail.com</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center">
-                                <i class="fas fa-map-marker-alt"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs text-slate-400 font-bold uppercase">Location</p>
-                                <p class="text-sm font-semibold">New Taipei City, Taiwan</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <form onsubmit="event.preventDefault(); document.getElementById('success-msg').classList.remove('hidden');" class="space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <input type="text" placeholder="Name" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all">
-                            <input type="email" placeholder="Email" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all">
-                        </div>
-                        <textarea placeholder="Message" rows="4" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"></textarea>
-                        <button type="submit" class="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100">
-                            Send Message
-                        </button>
-                    </form>
-                    <div id="success-msg" class="hidden mt-4 p-4 bg-green-50 text-green-700 rounded-xl font-medium">
-                        Thank you! I will get back to you soon.
-                    </div>
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                { title: 'AI 賦能教育', desc: '利用 LLM 與 NLP 技術開發除錯工具、RAG 課堂問答系統。', icon: <Code className="text-blue-600" />, color: "border-blue-100" },
+                { title: '計算心理學', desc: '透過生理訊號與多模態數據獲取，運用深度學習進行行為與人格分析。', icon: <User className="text-purple-600" />, color: "border-purple-100" },
+                { title: '智慧系統開發', desc: '開發規格導向的 AI 共學模式與邊緣運算 AI 助教。', icon: <Briefcase className="text-emerald-600" />, color: "border-emerald-100" },
+              ].map((item, i) => (
+                <div key={i} className={`bg-white p-6 rounded-xl border ${item.color} shadow-sm hover:shadow-md transition-all hover:-translate-y-1`}>
+                  <div className="mb-4 p-3 bg-slate-50 rounded-lg inline-block">{item.icon}</div>
+                  <h4 className="font-bold text-lg mb-2">{item.title}</h4>
+                  <p className="text-slate-600 text-sm leading-relaxed">{item.desc}</p>
                 </div>
+              ))}
             </div>
+          </div>
+        </section>
+
+        {/* Section: Publications */}
+        <section id="publications" className="scroll-mt-24">
+          <div className="space-y-8">
+            <h2 className="text-2xl font-bold text-slate-900 border-l-4 border-blue-600 pl-4 flex justify-between items-end">
+              精選期刊論文 <span className="text-sm font-normal text-slate-400 italic">Selected Journals</span>
+            </h2>
+            <div className="space-y-4">
+              {[
+                { title: "Investigating the effects of Puppy CodeReview, an AI-based code review system, on students' cognitive load", journal: "SoftwareX", year: 2025, impact: "SCIE, Q2, IF=2.4" },
+                { title: "Enhancing programming education", journal: "Educational Technology & Society", year: 2025, impact: "SSCI, Q1, IF=6.0" },
+                { title: "MindMe: an AI-Powered personality assessment tool", journal: "Multimedia Tools and Applications", year: 2024, impact: "SCIE, Q2, IF=3.0" },
+                { title: "A semi-hierarchical clustering method for constructing knowledge trees from StackOverflow", journal: "Journal of Information Science", year: 2022, impact: "SSCI/SCIE, IF=2.4" },
+                { title: "Detecting In Situ Identity Fraud on Social Network Services", journal: "IEEE Systems Journal", year: 2017, impact: "SCIE, Q1, IF=4.4" },
+              ].map((pub, i) => (
+                <div key={i} className="bg-white p-5 rounded-lg border border-slate-100 shadow-sm hover:border-blue-200 transition-colors group">
+                  <div className="flex justify-between items-start gap-4">
+                    <h3 className="font-medium text-slate-800 group-hover:text-blue-700 transition-colors leading-snug">{pub.title}</h3>
+                    <span className="bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded font-bold whitespace-nowrap">{pub.year}</span>
+                  </div>
+                  <div className="mt-2 text-sm flex flex-wrap gap-x-4 gap-y-1">
+                    <span className="text-slate-500 italic">{pub.journal}</span>
+                    <span className="text-blue-600 font-medium">{pub.impact}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Section: Projects */}
+        <section id="projects" className="scroll-mt-24">
+          <div className="space-y-12">
+            <section>
+              <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-slate-900">
+                <Briefcase className="text-blue-600" /> 研究計畫與產學合作
+              </h2>
+              <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                <table className="w-full text-left border-collapse">
+                  <thead className="bg-slate-50">
+                    <tr>
+                      <th className="px-6 py-4 text-sm font-bold text-slate-600">期間</th>
+                      <th className="px-6 py-4 text-sm font-bold text-slate-600">計畫名稱</th>
+                      <th className="px-6 py-4 text-sm font-bold text-slate-600">職務</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    <tr className="hover:bg-slate-50 transition-colors">
+                      <td className="px-6 py-4 text-sm">2025-2027</td>
+                      <td className="px-6 py-4 text-sm font-medium">發展以 AI 技術為後台的類 Duolingo 遊戲化程式學習系統 (國科會)</td>
+                      <td className="px-6 py-4 text-sm"><span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-md text-xs font-bold">主持人</span></td>
+                    </tr>
+                    <tr className="hover:bg-slate-50 transition-colors">
+                      <td className="px-6 py-4 text-sm">2018-2020</td>
+                      <td className="px-6 py-4 text-sm font-medium">推動大學程式設計教學計畫-分項3: Web領域 (教育部)</td>
+                      <td className="px-6 py-4 text-sm"><span className="px-2 py-1 bg-blue-50 text-blue-700 rounded-md text-xs font-bold">共同主持人</span></td>
+                    </tr>
+                    <tr className="hover:bg-slate-50 transition-colors">
+                      <td className="px-6 py-4 text-sm">2015-2016</td>
+                      <td className="px-6 py-4 text-sm font-medium">高級中等以下學校學生健康資訊系統健康資料分析整合 (國教署)</td>
+                      <td className="px-6 py-4 text-sm"><span className="px-2 py-1 bg-blue-50 text-blue-700 rounded-md text-xs font-bold">共同主持人</span></td>
+                    </tr>
+                    <tr className="hover:bg-slate-50 transition-colors">
+                      <td className="px-6 py-4 text-sm">2014-2016</td>
+                      <td className="px-6 py-4 text-sm font-medium">Everybet APP 開發 (嵐奕科技)</td>
+                      <td className="px-6 py-4 text-sm"><span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-md text-xs font-bold">主持人</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-slate-900">
+                <Code className="text-blue-600" /> 軟體開發與開源工具
+              </h2>
+              <div className="grid sm:grid-cols-2 gap-4">
+                {[
+                  { name: "PuppyChatter", desc: "基於 LLM 的應用工具，將前瞻 NLP 技術轉化為具體方案。" },
+                  { name: "Codenote", desc: "輔助開發流程的程式筆記與 AI 工具。" },
+                  { name: "WSRush Platform", desc: "無線 SOP 派送協定設計與實作。" },
+                  { name: "GPS Tracking System", desc: "軌跡追蹤與空間數據分析系統。" },
+                ].map((p, i) => (
+                  <div key={i} className="p-4 bg-white rounded-lg border border-slate-200 shadow-sm hover:border-blue-300 transition-all">
+                    <h3 className="font-bold text-blue-700 mb-1">{p.name}</h3>
+                    <p className="text-sm text-slate-600 leading-relaxed">{p.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
+        </section>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-white border-t border-slate-200 py-12 mt-24">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center">
+          <div className="flex justify-center space-x-6 mb-6">
+             <a href="mailto:lendle.tseng.archive@gmail.com" className="text-slate-400 hover:text-blue-600"><Mail size={24} /></a>
+             <a href="https://github.com/lendle1028" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-slate-900"><Github size={24} /></a>
+          </div>
+          <p className="text-slate-500 text-sm">© 2026 曾俊雄 博士 (Dr. Chun-Hsiung Tseng). All Rights Reserved.</p>
+          <p className="text-slate-400 text-xs mt-2 italic">電機工程學系副教授 | 教育科技與 AI 研究者</p>
+          <button 
+            onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}
+            className="mt-8 text-xs text-blue-600 hover:underline"
+          >
+            回到頂部 Back to Top
+          </button>
         </div>
-    </section>
+      </footer>
+    </div>
+  );
+};
 
-    <!-- Footer -->
-    <footer class="py-12 border-t border-slate-200 text-center text-slate-400 bg-white">
-        <p>© <span id="year"></span> Dr. Chun-Hsiung Tseng. All rights reserved.</p>
-        <p class="text-xs mt-2">Built with passion for Educational Technology & Computer Science.</p>
-    </footer>
-
-    <script>
-        document.getElementById('year').textContent = new Date().getFullYear();
-    </script>
-</body>
-</html>
+export default App;
