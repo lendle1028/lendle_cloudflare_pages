@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="https://glitch.com/favicon.ico" />
+
+    <title>IPIP Scale</title>
+
+    <!-- meta tags for SEO and social sharing -->
+    <link rel="canonical" href="https://glitch-hello-website.glitch.me/" />
+    <meta
+      name="description"
+      content="IPIP Scale"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta property="og:title" content="IPIP Scale" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://glitch-hello-website.glitch.me/" />
+    <meta
+      property="og:description"
+      content="IPIP Scale"
+    />
+    <meta
+      property="og:image"
+      content="https://cdn.glitch.com/605e2a51-d45f-4d87-a285-9410ad350515%2Fhello-website-social.png?v=1616712748147"
+    />
+    <meta name="twitter:card" content="summary" />
+
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/ipip/style.css" />
+
+    <!-- import the webpage's javascript file -->
+    <script src="/ipip/script.js" defer></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+      integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://www.gstatic.com/charts/loader.js"
+    ></script>
+    <script type="text/javascript">
+      // Load the Visualization API and the corechart package.
+      google.charts.load("current", { packages: ["corechart"] });
+    </script>
+    <style>
+      .negative {
+        transform: rotate(180deg);
+      }
+      .list-group-item{
+        border-width: 0px !important
+      }
+    </style>
+    <link href="star-rating.css" rel="stylesheet" />
+    <script src="star-rating.js"></script>
+    <script>
+      function calculate() {
+        let Extraversion = 0;
+        let Agreeableness = 0;
+        let Conscientiousness = 0;
+        let Emotional_Stability = 0;
+        let Imagination = 0;
+
+        let ExtraversionMax = 0;
+        let AgreeablenessMax = 0;
+        let ConscientiousnessMax = 0;
+        let Emotional_StabilityMax = 0;
+        let ImaginationMax = 0;
+
+        let p1s = $(".p1").get();
+        for (let p1 of p1s) {
+          Extraversion += parseFloat(p1.value);
+          ExtraversionMax += 5;
+        }
+        let n1s = $(".n1").get();
+        for (let n1 of n1s) {
+          Extraversion += 6 - parseFloat(n1.value);
+          ExtraversionMax += 5;
+        }
+
+        let p2s = $(".p2").get();
+        for (let p2 of p2s) {
+          Agreeableness += parseFloat(p2.value);
+          AgreeablenessMax += 5;
+        }
+        let n2s = $(".n2").get();
+        for (let n2 of n2s) {
+          Agreeableness += 6 - parseFloat(n2.value);
+          AgreeablenessMax += 5;
+        }
+
+        let p3s = $(".p3").get();
+        for (let p3 of p3s) {
+          Conscientiousness += parseFloat(p3.value);
+          ConscientiousnessMax += 5;
+        }
+        let n3s = $(".n3").get();
+        for (let n3 of n3s) {
+          Conscientiousness += 6 - parseFloat(n3.value);
+          ConscientiousnessMax += 5;
+        }
+
+        let p4s = $(".p4").get();
+        for (let p4 of p4s) {
+          Emotional_Stability += parseFloat(p4.value);
+          Emotional_StabilityMax += 5;
+        }
+        let n4s = $(".n4").get();
+        for (let n4 of n4s) {
+          Emotional_Stability += 6 - parseFloat(n4.value);
+          Emotional_StabilityMax += 5;
+        }
+
+        let p5s = $(".p5").get();
+        for (let p5 of p5s) {
+          Imagination += parseFloat(p5.value);
+          ImaginationMax += 5;
+        }
+        let n5s = $(".n5").get();
+        for (let n5 of n5s) {
+          Imagination += 6 - parseFloat(n5.value);
+          ImaginationMax += 5;
+        }
+
+        //console.log(Imagination / ImaginationMax);
+        var data = google.visualization.arrayToDataTable([
+          ["Item", "Value"],
+          ["Extraversion", (Extraversion * 100) / ExtraversionMax],
+          ["Agreeableness", (Agreeableness * 100) / AgreeablenessMax],
+          [
+            "Conscientiousness",
+            (Conscientiousness * 100) / ConscientiousnessMax,
+          ],
+          [
+            "Emotional Stability",
+            (Emotional_Stability * 100) / Emotional_StabilityMax,
+          ],
+          ["Imagination", (Imagination * 100) / ImaginationMax],
+        ]);
+
+        let levelEx = Extraversion / 28.59259259;
+        let levelAg = Agreeableness / 37.9444444;
+        let levelCo = Conscientiousness / 33.03703704;
+        let levelEs = Emotional_Stability / 27.42592593;
+        let levelOp = Imagination / 32.09259259;
+
+        var data2 = google.visualization.arrayToDataTable([
+          ["Element", "Density", { role: "style" }, { role: "annotation" }],
+          ["Extraversion", levelEx, "red", "Extraversion"], // RGB value
+          ["Agreeableness", levelAg, "blue", "Agreeableness"], // English color name
+          ["Conscientiousness", levelCo, "green", "Conscientiousness"],
+          ["Emotional Stability", levelEs, "black", "Emotional Stability"], // CSS-style declaration
+          ["Imagination", levelOp, "gold", "Imagination"], // CSS-style declaration
+        ]);
+
+        var options = {
+          title: "Big Five Factors",
+          legend: {textStyle: {fontSize: 14, color: 'blue'}},
+          titleTextStyle: {
+                fontSize: 25,               // 12, 18
+                bold: true,                 // true or false
+                italic: true                // true of false
+            },
+        };
+
+        var options2 = {
+          title: "Relative Values",
+          legend: {textStyle: {fontSize: 14, color: 'blue'}},
+          titleTextStyle: {
+                fontSize: 25,               // 12, 18
+                bold: true,                 // true or false
+                italic: true                // true of false
+            },
+        };
+
+        var chart = new google.visualization.PieChart(
+          document.getElementById("chart")
+        );
+        var chart2 = new google.visualization.BarChart(
+          document.getElementById("chart2")
+        );
+
+        chart.draw(data, options);
+        chart2.draw(data2, options2);
+        $("#exImage").removeClass("negative");
+        $("#coImage").removeClass("negative");
+        $("#opImage").removeClass("negative");
+        $("#agImage").removeClass("negative");
+        $("#esImage").removeClass("negative");
+        $("#esImage").addClass("negative");
+        if (levelEx < 1) {
+          $("#exImage").addClass("negative");
+          $("#exText").html(
+            "外向性表示人際互動的數量和密度、對刺激的需要以及獲得愉悅的能力。<br/><b>逆位</b>的人比較安靜，謹慎，不喜歡與外界過多接觸，他們不需要那麼多的刺激，因此喜歡一個人獨處。"
+          );
+        }else{
+          $("#exText").html(
+            "外向性表示人際互動的數量和密度、對刺激的需要以及獲得愉悅的能力。<br /><b>順位</b>代表喜歡與人接觸，充滿活力，經常感受到積極的情緒。充滿熱情，喜歡運動，喜歡刺激冒險，喜歡引起別人的注意。"
+          );
+        }
+        if (levelCo < 1) {
+          $("#coImage").addClass("negative");
+          $("#coText").html(
+            "盡責性是指帶有細心或勤奮特徵的人格特質。盡責性意味著希望做好一項任務，並認真對待對向他人許諾的義務。<br/><b>逆位</b>的人常被認為是快樂的、有趣的、很好的玩伴。但是衝動的行為常常會給自己帶來麻煩。"
+          );
+        }else{
+          $("#coText").html(
+            "盡責性是指帶有細心或勤奮特徵的人格特質。盡責性意味著希望做好一項任務，並認真對待對向他人許諾的義務。<br /><b>順位</b>的人往往更有效率和有條理，而不是隨和和無序。表現出自律、盡職盡責和追求成就的傾向。"
+          );
+        }
+        if (levelOp < 1) {
+          $("#opImage").addClass("negative");
+          $("#opText").html(
+            "開放性描述一個人的認知風格，以及對陌生情境的容忍和探索。<br/><b>逆位</b>的人講求實際，偏愛常規，比較傳統和保守,適合警察、銷售、服務性職業等。"
+          );
+        }else{
+          $("#opText").html(
+            "開放性描述一個人的認知風格，以及對陌生情境的容忍和探索。<br /><b>順位</b>的人偏愛抽象思維，興趣廣泛，適合教授等職業。"
+          );
+        }
+        if (levelAg < 1) {
+          $("#agImage").addClass("negative");
+          $("#agText").html(
+            "友善性是評估個體喜歡與他人一同出現的程度，代表了「愛」，對合作和人際和諧是否看重。<br/><b>逆位</b>代表本質上不關心別人的利益，因此也不樂意去幫助別人。有時候甚至對別人是非常多疑的，懷疑別人的動機。"
+          );
+        }else{
+          $("#agText").html(
+            "友善性是評估個體喜歡與他人一同出現的程度，代表了「愛」，對合作和人際和諧是否看重。<br /><b>順位</b>的人對人性持樂觀的態度，相信人性本善。"
+          );
+        }
+        if (levelEs < 1) {
+          $("#esImage").removeClass("negative");
+          $("#esText").html(
+            "神經質反映個體情感調節過程，反映個體體驗消極情緒的傾向和情緒不穩定性。<br/><b>順位</b>代表傾向於有心理壓力，不現實的想法、過多的要求和衝動，更容易體驗到諸如憤怒、焦慮、抑鬱等消極的情緒。"
+          );
+        }else{
+          $("#esText").html(
+            "神經質反映個體情感調節過程，反映個體體驗消極情緒的傾向和情緒不穩定性。<br /><b>逆位</b>的人較少煩惱，較少情緒化，比較平靜。"
+          );
+        }
+        
+        if(levelEx>1 && levelOp>1){
+          $("#learningDesc").html("您較傾向使用深入學習的模式");
+        }else if(levelEx>1 && levelEs<1){
+          $("#learningDesc").html("您較傾向使用淺層學習的模式");
+        }else if(levelEx>1 && levelCo>1 && levelEs<1){
+          $("#learningDesc").html("您較傾向使用策略學習的模式");
+        }else{
+          $("#learningDesc").html("您較沒有明顯的學習模式");
+        }
+        $("#enter").hide();
+        $("#result").show();
+      }
+    </script>
+  </head>
+  <body>
+    <div id="enter" class="container">
+      1=最不符合&nbsp;&nbsp;&nbsp;5=最符合
+      <ol class="list-group">
+        <div class="row justify-content-between">
+          <li class="list-group-item col-lg-4 col-6">
+            喜歡參與聚會
+            <select class="p1 star-rating" id="q1">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+          <li class="list-group-item col-lg-4 col-6">
+            不顧慮他人感受<select class="n2 star-rating" id="q2">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+        </div>
+        <div class="row justify-content-between">
+          <li class="list-group-item col-lg-4 col-6">
+            總是將自己保持在最好的狀態<select class="p3 star-rating" id="q3">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+          <li class="list-group-item col-lg-4 col-6">
+            容易感到壓力<select class="n4 star-rating" id="q4">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+        </div>
+        <div class="row justify-content-between">
+          <li class="list-group-item col-lg-4 col-6">
+            擁有好的表達能力<select class="p5 star-rating" id="q5">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+          <li class="list-group-item col-lg-4 col-6">
+            較少與人溝通<select class="n1 star-rating" id="q6">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+        </div>
+        <div class="row justify-content-between">
+          <li class="list-group-item col-lg-4 col-6">
+            喜歡認識他人<select class="p2 star-rating" id="q7">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+          <li class="list-group-item col-lg-4 col-6">
+            我會隨手亂放東西<select class="n3 star-rating" id="q8">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+        </div>
+        <div class="row justify-content-between">
+          <li class="list-group-item col-lg-4 col-6">
+            大多時候感到放鬆<select class="p4 star-rating" id="q9">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+          <li class="list-group-item col-lg-4 col-6">
+            難以瞭解抽象的概念<select class="n5 star-rating" id="q10">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+        </div>
+        <div class="row justify-content-between">
+          <li class="list-group-item col-lg-4 col-6">
+            在人群中感到自在<select class="p1 star-rating" id="q11">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+          <li class="list-group-item col-lg-4 col-6">
+            欺負他人<select class="n2 star-rating" id="q12">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+        </div>
+        <div class="row justify-content-between">
+          <li class="list-group-item col-lg-4 col-6">
+            注意小細節<select class="p3 star-rating" id="q13">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+          <li class="list-group-item col-lg-4 col-6">
+            經常感到擔憂<select class="n4 star-rating" id="q14">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+        </div>
+        <div class="row justify-content-between">
+          <li class="list-group-item col-lg-4 col-6">
+            擁有豐富的想像力<select class="p5 star-rating" id="q15">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+          <li class="list-group-item col-lg-4 col-6">
+            喜歡躲在人群背後<select class="n1 star-rating" id="q16">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+        </div>
+        <div class="row justify-content-between">
+          <li class="list-group-item col-lg-4 col-6">
+            擁有同理心<select class="p2 star-rating" id="q17">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+          <li class="list-group-item col-lg-4 col-6">
+            搞砸事情<select class="n3 star-rating" id="q18">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+        </div>
+        <div class="row justify-content-between">
+          <li class="list-group-item col-lg-4 col-6">
+            較少感到沮喪<select class="p4 star-rating" id="q19">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+          <li class="list-group-item col-lg-4 col-6">
+            不喜歡思考抽象邏輯概念<select class="n5 star-rating" id="q20">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+        </div>
+        <div class="row justify-content-between">
+          <li class="list-group-item col-lg-4 col-6">
+            經常開啟對話<select class="p1 star-rating" id="q21">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+          <li class="list-group-item col-lg-4 col-6">
+            對別人的問題不感興趣<select class="n2 star-rating" id="q22">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+        </div>
+        <div class="row justify-content-between">
+          <li class="list-group-item col-lg-4 col-6">
+            立即完成瑣碎事務<select class="p3 star-rating" id="q23">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+          <li class="list-group-item col-lg-4 col-6">
+            容易被干擾<select class="n4 star-rating" id="q24">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+        </div>
+        <div class="row justify-content-between">
+          <li class="list-group-item col-lg-4 col-6">
+            總是有好的點子<select class="p5 star-rating" id="q25">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+          <li class="list-group-item col-lg-4 col-6">
+            不與他人交談<select class="n1 star-rating" id="q26">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+        </div>
+        <div class="row justify-content-between">
+          <li class="list-group-item col-lg-4 col-6">
+            對他人仁慈<select class="p2 star-rating" id="q27">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+          <li class="list-group-item col-lg-4 col-6">
+            經常忘記將東西放回原處<select class="n3 star-rating" id="q28">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+        </div>
+        <div class="row justify-content-between">
+          <li class="list-group-item col-lg-4 col-6">
+            容易感到懊惱<select class="n4 star-rating" id="q29">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+          <li class="list-group-item col-lg-4 col-6">
+            缺乏想像力<select class="n5 star-rating" id="q30">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+        </div>
+        <div class="row justify-content-between">
+          <li class="list-group-item col-lg-4 col-6">
+            聚會中會與不同人做交談<select class="p1 star-rating" id="q31">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+          <li class="list-group-item col-lg-4 col-6">
+            對他人不感到興趣<select class="n2 star-rating" id="q32">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+        </div>
+        <div class="row justify-content-between">
+          <li class="list-group-item col-lg-4 col-6">
+            喜歡秩序<select class="p3 star-rating" id="q33">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+          <li class="list-group-item col-lg-4 col-6">
+            經常改變心情<select class="n4 star-rating" id="q34">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+        </div>
+        <div class="row justify-content-between">
+          <li class="list-group-item col-lg-4 col-6">
+            能快速理解內容<select class="p5 star-rating" id="q35">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+          <li class="list-group-item col-lg-4 col-6">
+            不喜歡引起他人注意<select class="n1 star-rating" id="q36">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+        </div>
+        <div class="row justify-content-between">
+          <li class="list-group-item col-lg-4 col-6">
+            為了他人停下工作<select class="p2 star-rating" id="q37">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+          <li class="list-group-item col-lg-4 col-6">
+            推卸責任<select class="n3 star-rating" id="q38">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+        </div>
+        <div class="row justify-content-between">
+          <li class="list-group-item col-lg-4 col-6">
+            時常情緒起伏大<select class="n4 star-rating" id="q39">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+          <li class="list-group-item col-lg-4 col-6">
+            使用艱澀的詞彙<select class="p5 star-rating" id="q40">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+        </div>
+        <div class="row justify-content-between">
+          <li class="list-group-item col-lg-4 col-6">
+            不擔心自己成為焦點<select class="p1 star-rating" id="q41">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+          <li class="list-group-item col-lg-4 col-6">
+            同理心<select class="p2 star-rating" id="42">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+        </div>
+        <div class="row justify-content-between">
+          <li class="list-group-item col-lg-4 col-6">
+            喜歡遵循既定的計畫安排<select class="p3 star-rating" id="q43">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+          <li class="list-group-item col-lg-4 col-6">
+            容易被激怒<select class="n4 star-rating" id="q44">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+        </div>
+        <div class="row justify-content-between">
+          <li class="list-group-item col-lg-4 col-6">
+            花時間思考事情<select class="p5 star-rating" id="q45">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+          <li class="list-group-item col-lg-4 col-6">
+            在陌生人中表現安靜<select class="n1 star-rating" id="q46">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+        </div>
+        <div class="row justify-content-between">
+          <li class="list-group-item col-lg-4 col-6">
+            讓他人感到安心<select class="p2 star-rating" id="q47">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+          <li class="list-group-item col-lg-4 col-6">
+            嚴謹對待工作<select class="p3 star-rating" id="q48">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+        </div>
+        <div class="row justify-content-between">
+          <li class="list-group-item col-lg-4 col-6">
+            經常感到憂鬱<select class="n4 star-rating" id="q49">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+          <li class="list-group-item col-lg-4 col-6">
+            有很多點子<select class="p5 star-rating" id="q50">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </li>
+        </div>
+      </ol>
+      <div class="row">
+          <input
+          type="button"
+          value="計算"
+          onclick="calculate();"
+          class="btn btn-primary col-12"
+        />  
+      </div>
+      
+    </div>
+    <script>
+      function back() {
+        $("#enter").show();
+        $("#result").hide();
+      }
+    </script>
+    <div id="result" style="display: none">
+      <input
+              type="button"
+              value="BACK"
+              onclick="back();"
+              class="btn btn-primary"
+            />
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="overview-tab" data-toggle="tab" data-target="#overview" type="button" role="tab" aria-controls="overview" aria-selected="true">概論</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="separate-tab" data-toggle="tab" data-target="#separate" type="button" role="tab" aria-controls="separate" aria-selected="false">面向</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="learning-tab" data-toggle="tab" data-target="#learning" type="button" role="tab" aria-controls="learning" aria-selected="false">學習</button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+          <div id="chart" style="width: 100%; height: 300px"></div>
+          <div id="chart2" style="width: 100%; height: 300px"></div>
+        </div>
+        <div class="tab-pane fade " id="separate" role="separate" aria-labelledby="separate-tab">
+          <div id="accordion">
+                <div class="card">
+                  <div class="card-header" id="headingOne">
+                    <h5 class="mb-0">
+                      <button
+                        class="btn btn-link"
+                        data-toggle="collapse"
+                        data-target="#collapseOne"
+                        aria-expanded="true"
+                        aria-controls="collapseOne"
+                      >
+                        Extraverted
+                      </button>
+                    </h5>
+                  </div>
+
+                  <div
+                    id="collapseOne"
+                    class="collapse show"
+                    aria-labelledby="headingOne"
+                    data-parent="#accordion"
+                  >
+                    <img
+                      class="card-img-top"
+                      id="exImage"
+                      style="height: 301px; width: 213px"
+                      src="https://cdn.glitch.global/61d152fb-ce97-4d78-888e-7fd26232fba6/extraverted.png?v=1660655952404"
+                      alt="Card image cap"
+                    />
+                    <div class="card-body" id="exText">
+                      外向性表示人際互動的數量和密度、對刺激的需要以及獲得愉悅的能力。
+                      <br />
+                      <b>順位</b
+                      >代表喜歡與人接觸，充滿活力，經常感受到積極的情緒。充滿熱情，喜歡運動，喜歡刺激冒險，喜歡引起別人的注意。
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header" id="headingTwo">
+                    <h5 class="mb-0">
+                      <button
+                        class="btn btn-link collapsed"
+                        data-toggle="collapse"
+                        data-target="#collapseTwo"
+                        aria-expanded="false"
+                        aria-controls="collapseTwo"
+                      >
+                        Conscientious
+                      </button>
+                    </h5>
+                  </div>
+                  <div
+                    id="collapseTwo"
+                    class="collapse"
+                    aria-labelledby="headingTwo"
+                    data-parent="#accordion"
+                  >
+                    <img
+                      class="card-img-top"
+                      id="coImage"
+                      style="height: 301px; width: 213px"
+                      src="https://cdn.glitch.global/61d152fb-ce97-4d78-888e-7fd26232fba6/conscientious.png?v=1660655865989"
+                      alt="Card image cap"
+                    />
+                    <div class="card-body" id="coText">
+                      盡責性是指帶有細心或勤奮特徵的人格特質。盡責性意味著希望做好一項任務，並認真對待對向他人許諾的義務。
+                      <br />
+                      <b>順位</b
+                      >的人往往更有效率和有條理，而不是隨和和無序。表現出自律、盡職盡責和追求成就的傾向。
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header" id="headingThree">
+                    <h5 class="mb-0">
+                      <button
+                        class="btn btn-link collapsed"
+                        data-toggle="collapse"
+                        data-target="#collapseThree"
+                        aria-expanded="false"
+                        aria-controls="collapseThree"
+                      >
+                        Openness to Experience
+                      </button>
+                    </h5>
+                  </div>
+                  <div
+                    id="collapseThree"
+                    class="collapse"
+                    aria-labelledby="headingThree"
+                    data-parent="#accordion"
+                  >
+                    <img
+                      class="card-img-top"
+                      id="opImage"
+                      style="height: 301px; width: 213px"
+                      src="https://cdn.glitch.global/61d152fb-ce97-4d78-888e-7fd26232fba6/experience.png?v=1660655960733"
+                      alt="Card image cap"
+                    />
+                    <div class="card-body" id="opText">
+                      開放性描述一個人的認知風格，以及對陌生情境的容忍和探索。
+                      <br />
+                      <b>順位</b>的人偏愛抽象思維，興趣廣泛，適合教授等職業。
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header" id="headingThree">
+                    <h5 class="mb-0">
+                      <button
+                        class="btn btn-link collapsed"
+                        data-toggle="collapse"
+                        data-target="#collapseFour"
+                        aria-expanded="false"
+                        aria-controls="collapseFour"
+                      >
+                        Agreeableness
+                      </button>
+                    </h5>
+                  </div>
+                  <div
+                    id="collapseFour"
+                    class="collapse"
+                    aria-labelledby="headingThree"
+                    data-parent="#accordion"
+                  >
+                    <img
+                      class="card-img-top"
+                      id="agImage"
+                      style="height: 301px; width: 213px"
+                      src="https://cdn.glitch.global/61d152fb-ce97-4d78-888e-7fd26232fba6/agreeable.png?v=1660655889006"
+                      alt="Card image cap"
+                    />
+                    <div class="card-body" id="agText">
+                      友善性是評估個體喜歡與他人一同出現的程度，代表了「愛」，對合作和人際和諧是否看重。
+                      <br />
+                      <b>順位</b>的人對人性持樂觀的態度，相信人性本善。
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header" id="headingThree">
+                    <h5 class="mb-0">
+                      <button
+                        class="btn btn-link collapsed"
+                        data-toggle="collapse"
+                        data-target="#collapseFive"
+                        aria-expanded="false"
+                        aria-controls="collapseFive"
+                      >
+                        Neurotic
+                      </button>
+                    </h5>
+                  </div>
+                  <div
+                    id="collapseFive"
+                    class="collapse"
+                    aria-labelledby="headingThree"
+                    data-parent="#accordion"
+                  >
+                    <img
+                      class="card-img-top negative"
+                      id="esImage"
+                      style="height: 301px; width: 213px"
+                      src="https://cdn.glitch.global/61d152fb-ce97-4d78-888e-7fd26232fba6/neurotic.png?v=1660655972244"
+                      alt="Card image cap"
+                    />
+                    <div class="card-body" id="esText">
+                      神經質反映個體情感調節過程，反映個體體驗消極情緒的傾向和情緒不穩定性。
+                      <br />
+                      <b>逆位</b>的人較少煩惱，較少情緒化，比較平靜。
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
+        <div class="tab-pane fade container" id="learning" role="tabpanel" aria-labelledby="learning-tab">
+          <div id="learningDesc">
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      var starRatingControl = new StarRating(".star-rating", {
+        maxStars: 5,
+      });
+    </script>
+  </body>
+</html>
