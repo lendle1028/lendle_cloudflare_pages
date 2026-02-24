@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        async function redirectToForm() {
+            try {
+                // 1. 抓取使用者 IP
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                const userIP = data.ip;
+
+                // 2. 設定你的 Google Form ID 與 預填欄位 ID
+                const formID = "你的_FORM_ID";
+                const entryID = "entry.123456789"; // 這是你表單中 IP 欄位的 ID
+
+                // 3. 組合成預填連結
+                const finalUrl = `https://docs.google.com/forms/d/e/${formID}/viewform?${entryID}=${userIP}`;
+                console.log(finalUrl);
+                // 4. 跳轉
+                window.location.href = finalUrl;
+            } catch (error) {
+                // 如果抓 IP 失敗（例如被擋），還是要讓使用者去填表單
+                // window.location.href = "https://docs.google.com/forms/d/e/你的_FORM_ID/viewform";
+            }
+        }
+        window.onload = redirectToForm;
+    </script>
+</body>
+</html>
