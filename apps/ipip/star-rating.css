@@ -1,8 +1,8 @@
 :root {
     --gl-star-color: #fdd835;
     --gl-star-color-inactive: #dcdce6;
-    --gl-star-empty: url('https://cdn.glitch.global/61d152fb-ce97-4d78-888e-7fd26232fba6/star-empty.svg?v=1660793949454');
-    --gl-star-full: url('https://cdn.glitch.global/61d152fb-ce97-4d78-888e-7fd26232fba6/star-full.svg?v=1660793952657');
+    --gl-star-empty: url('/apps/ipip/star-empty.svg');
+    --gl-star-full: url('/apps/ipip/star-full.svg');
     --gl-star-size: 24px;
     --gl-tooltip-border-radius: 4px;
     --gl-tooltip-font-size: 0.875rem;
@@ -201,8 +201,8 @@
 /* Compatibilty with v3 */
 
 .gl-star-rating--stars[class*=" s"] > span {
-    background-image: url('../img/star-empty.svg') !important;
-    background-image: url('../img/star-empty.svg') !important;
+    background-image: url('./star-empty.svg') !important;
+    background-image: url('./star-empty.svg') !important;
     background-image: var(--gl-star-empty) !important;
 }
 
@@ -214,7 +214,7 @@
 
 .gl-star-rating--stars[class*=" s"] > span.gl-active,
 .gl-star-rating--stars[class*=" s"] > span.gl-active.gl-selected {
-    background-image: url('../img/star-full.svg') !important;
-    background-image: url('../img/star-full.svg') !important;
+    background-image: url('./star-full.svg') !important;
+    background-image: url('./star-full.svg') !important;
     background-image: var(--gl-star-full) !important;
 }
