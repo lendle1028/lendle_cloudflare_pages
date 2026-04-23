@@ -994,5 +994,62 @@
         maxStars: 5,
       });
     </script>
+    <!-- 燈箱容器 (已改為純 CSS 行內樣式確保不干擾您的 Bootstrap) -->
+    <div id="custom-lightbox" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index: 9999; display: none; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease;">
+        <button id="lightbox-close" style="position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; background: none; border: none; cursor: pointer;">&times;</button>
+        <img id="lightbox-img" style="max-width: 90%; max-height: 90%; object-fit: contain;" src="" alt="全螢幕圖片">
+    </div>
+
+    <!-- 燈箱腳本 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 抓取您頁面上所有 class="card-img-top" 的圖片
+            const images = document.querySelectorAll('.card-img-top');
+            const lightbox = document.getElementById('custom-lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const lightboxClose = document.getElementById('lightbox-close');
+
+            images.forEach(img => {
+                img.style.cursor = 'pointer'; // 讓滑鼠移過去變手指
+                img.addEventListener('click', function() {
+                    lightboxImg.src = this.src;
+                    
+                    // 針對 Neurotic 圖片，若原圖有套用翻轉 (negative) class，燈箱內也同步套用
+                    if (this.classList.contains('negative')) {
+                        lightboxImg.classList.add('negative');
+                    } else {
+                        lightboxImg.classList.remove('negative');
+                    }
+
+                    lightbox.style.display = 'flex';
+                    setTimeout(() => {
+                        lightbox.style.opacity = '1';
+                    }, 10);
+                });
+            });
+
+            function closeLightbox() {
+                lightbox.style.opacity = '0';
+                setTimeout(() => {
+                    lightbox.style.display = 'none';
+                    lightboxImg.src = '';
+                }, 300);
+            }
+
+            // 點擊黑底或 X 關閉
+            lightbox.addEventListener('click', function(e) {
+                if (e.target === lightbox || e.target === lightboxClose) {
+                    closeLightbox();
+                }
+            });
+
+            // ESC 鍵關閉
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && lightbox.style.display === 'flex') {
+                    closeLightbox();
+                }
+            });
+        });
+    </script>
   </body>
 </html>
