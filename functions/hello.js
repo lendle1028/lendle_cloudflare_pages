@@ -10,7 +10,7 @@ export async function onRequest(context) {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     // 3. 執行你的 Supabase 查詢 (這裡以讀取 test_table 為例)
-    const { data, error } = await supabase
+    const { data, error } = await supabase//
       .from('ipip.renamed_ipip')
       .select('*')
       .limit(10);
