@@ -29,6 +29,6 @@ export async function onRequest(context) {
     });
 
   } catch (err) {
-    return new Response(JSON.stringify({ error: "伺服器錯誤" }), { status: 500 });
+    return new Response(JSON.stringify({ error: "伺服器錯誤"+err }), { status: 500 });
   }
 }
