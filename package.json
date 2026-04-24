@@ -1,0 +1,22 @@
+{
+  "name": "lendle_cloudflare_pages",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lendle1028/lendle_cloudflare_pages.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lendle1028/lendle_cloudflare_pages/issues"
+  },
+  "homepage": "https://github.com/lendle1028/lendle_cloudflare_pages#readme",
+  "description": "",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.104.1"
+  }
+}
