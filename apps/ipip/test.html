@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>資料庫寫入測試頁面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #logArea {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            height: 400px;
+            overflow-y: auto;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .log-entry { margin-bottom: 15px; border-bottom: 1px dashed #ccc; padding-bottom: 10px; }
+        .log-success { color: green; }
+        .log-error { color: red; }
+    </style>
+</head>
+<body>
+
+    <h2>Supabase 寫入測試 (自動產生隨機資料)</h2>
+    <p>點擊下方按鈕，將自動產生包含 timestamp 與 1~50 個隨機分數 (1-5) 的 JSON，並送出給後端 API。</p>
+    
+    <button id="sendBtn">產生並送出測試資料</button>
+
+    <div id="logArea">等待測試開始...</div>
+
+    <script>
+        const sendBtn = document.getElementById('sendBtn');
+        const logArea = document.getElementById('logArea');
+
+        // 在畫面上印出 Log 的輔助函式
+        function log(message, type = 'normal') {
+            let className = '';
+            if (type === 'success') className = 'log-success';
+            if (type === 'error') className = 'log-error';
+            
+            const timeString = new Date().toLocaleTimeString();
+            const logHTML = `<div class="log-entry ${className}"><strong>[${timeString}]</strong><br>${message}</div>`;
+            logArea.innerHTML = logHTML + logArea.innerHTML; // 新的插在最上面
+        }
+
+        sendBtn.addEventListener('click', async () => {
+            // 避免重複點擊
+            sendBtn.disabled = true;
+            sendBtn.textContent = "傳送中...";
+
+            // 1. 產生測試資料
+            const payload = {
+                timestamp: new Date().toISOString()
+            };
+            
+            // 產生 1~50 的隨機整數 (範圍 1~5)
+            for (let i = 1; i <= 50; i++) {
+                payload[i.toString()] = Math.floor(Math.random() * 5) + 1; 
+            }
+
+            log(`準備發送資料：\n${JSON.stringify(payload, null, 2)}`);
+
+            try {
+                // 2. 發送 AJAX 請求
+                const response = await fetch('/submit-ipip', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                // 3. 處理結果
+                if (response.ok) {
+                    log(`✅ 寫入成功！\n伺服器回應：${JSON.stringify(result, null, 2)}`, 'success');
+                } else {
+                    log(`❌ 寫入失敗！\n錯誤訊息：${JSON.stringify(result, null, 2)}`, 'error');
+                }
+
+            } catch (error) {
+                log(`⚠️ 發生連線異常：\n${error.message}`, 'error');
+            } finally {
+                // 恢復按鈕狀態
+                sendBtn.disabled = false;
+                sendBtn.textContent = "產生並送出測試資料";
+            }
+        });
+    </script>
+</body>
+</html>
