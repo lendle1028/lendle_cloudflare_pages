@@ -794,11 +794,11 @@
           contentType: "application/json",
           data: JSON.stringify(payload),
           success: function(result) {
-              log(`✅ 寫入成功！\n伺服器回應：${JSON.stringify(result, null, 2)}`, 'success');
+              console.log(`✅ 寫入成功！\n伺服器回應：${JSON.stringify(result, null, 2)}`, 'success');
               $("#buttonSave").get(0).disabled = false;
           },
           error: function(result) {
-              log(`❌ 寫入失敗！\n錯誤訊息：${JSON.stringify(result, null, 2)}`, 'error');
+              console.log(`❌ 寫入失敗！\n錯誤訊息：${JSON.stringify(result, null, 2)}`, 'error');
           }
         });
       }
