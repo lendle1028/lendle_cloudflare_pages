@@ -781,6 +781,31 @@
         $("#enter").show();
         $("#result").hide();
       }
+
+      function save() {
+        $("#buttonSave").get(0).disabled = true;
+        const payload = {
+          timestamp: new Date().toISOString()
+        };
+            
+        // 產生 1~50 的隨機整數 (範圍 1~5)
+        for (let i = 1; i <= 50; i++) {
+          payload[i.toString()] = parseInt(document.getElementById("q" + i).value);
+        }
+
+        $.ajax("/submit-ipip", {
+          method: "POST",
+          contentType: "application/json",
+          data: JSON.stringify(payload),
+          success: function(result) {
+              log(`✅ 寫入成功！\n伺服器回應：${JSON.stringify(result, null, 2)}`, 'success');
+              $("#buttonSave").get(0).disabled = false;
+          },
+          error: function(result) {
+              log(`❌ 寫入失敗！\n錯誤訊息：${JSON.stringify(result, null, 2)}`, 'error');
+          }
+        });
+      }
     </script>
     <div id="result" style="display: none">
       <input
@@ -788,6 +813,13 @@
               value="BACK"
               onclick="back();"
               class="btn btn-primary"
+            />
+      <input
+              type="button"
+              value="SAVE"
+              onclick="save();"
+              id="buttonSave"
+              class="btn btn-danger"
             />
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
